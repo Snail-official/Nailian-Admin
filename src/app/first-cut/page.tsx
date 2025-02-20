@@ -1,21 +1,15 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
-import IconTrash from "@/assets/icons/icon_trash.svg"
 import IconCirclePlus from "@/assets/icons/icons_circle_plus.svg"
 import IconDownload from "@/assets/icons/icon_download.svg"
-import IconCheck from "@/assets/icons/icon_check.svg"
-import { useState, useRef } from "react"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import IconTrash from "@/assets/icons/icon_trash.svg"
+import { useState } from "react"
+import { TipShapeChips } from "@/components/first-cut/TipShapeChips"
+import { ImageGrid } from "@/components/first-cut/ImageGrid"
+import { UploadModal } from "@/components/first-cut/UploadModal"
+import { DeleteDialog } from "@/components/first-cut/DeleteDialog"
 
-// Mock 데이터 타입 정의
 interface MockImage {
   id: number
   src: string
@@ -39,14 +33,10 @@ export default function FirstCutPage() {
     }))
   )
   const [selectedShape, setSelectedShape] = useState<string | null>(null)
-  const [selectedModalShape, setSelectedModalShape] = useState<string | null>(null)
   const [selectedImages, setSelectedImages] = useState<number[]>([])
   const [isUploadOpen, setIsUploadOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // 선택된 shape에 따라 이미지 필터링
   const filteredImages = selectedShape
     ? mockImages.filter(image => image.shape === selectedShape)
     : mockImages
@@ -59,42 +49,17 @@ export default function FirstCutPage() {
     )
   }
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files && files.length > 0) {
-      const fileArray = Array.from(files)
-      setUploadedFiles(prev => [...prev, ...fileArray])
-    }
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    const files = e.dataTransfer.files
-    if (files && files.length > 0) {
-      const fileArray = Array.from(files)
-      setUploadedFiles(prev => [...prev, ...fileArray])
-    }
-  }
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-  }
-
-  const handleUploadComplete = () => {
-    
-    const newImages: MockImage[] = uploadedFiles.map((file, index) => ({
+  const handleUploadComplete = (files: File[], shape: string | null) => {
+    const newImages: MockImage[] = files.map((file, index) => ({
       id: mockImages.length + index + 1,
       src: URL.createObjectURL(file),
       alt: file.name,
       uploadedBy: "김민지",
       date: new Date().toISOString().split('T')[0],
-      shape: selectedModalShape || undefined
+      shape: shape || undefined
     }))
 
     setMockImages(prev => [...prev, ...newImages])
-    setIsUploadOpen(false)
-    setUploadedFiles([])
-    setSelectedModalShape(null)
   }
 
   const handleDelete = () => {
@@ -107,119 +72,22 @@ export default function FirstCutPage() {
     <div className="py-6 max-w-6xl mx-auto">
       {/* 필터 및 버튼 행 */}
       <div className="flex items-center justify-between mb-4 pl-6 pr-[72px]">
+        <TipShapeChips
+          shapes={tipShapes}
+          selectedShape={selectedShape}
+          onShapeSelect={setSelectedShape}
+        />
         <div className="flex gap-2">
-          {tipShapes.map((shape) => (
-            <Button
-              key={shape}
-              variant="outline"
-              className={`rounded-full transition-colors ${
-                selectedShape === shape 
-                  ? "bg-[#CD19FF] text-white hover:text-white hover:bg-[#CD19FF]" 
-                  : "bg-white text-black hover:bg-gray-100"
-              }`}
-              onClick={() => setSelectedShape(shape === selectedShape ? null : shape)}
-            >
-              {shape}
-            </Button>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <Dialog 
-            open={isUploadOpen} 
-            onOpenChange={(open) => {
-              setIsUploadOpen(open)
-              if (!open) {
-                setSelectedModalShape(null)
-                setUploadedFiles([])
-              }
-            }}
+          <Button
+            variant="outline"
+            className="bg-white text-black hover:bg-gray-100"
+            onClick={() => setIsUploadOpen(true)}
           >
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="bg-white text-black hover:bg-gray-100"
-              >
-                <IconCirclePlus className="w-5 h-5 mr-2" />
-                업로드하기
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg w-full">
-              <DialogHeader>
-                <DialogTitle>이미지 업로드</DialogTitle>
-              </DialogHeader>
-
-              {/* 팁 모양 선택 칩 (별도의 상태 사용) */}
-              <div className="flex gap-2 flex-wrap">
-                {tipShapes.map((shape) => (
-                  <Button
-                    key={shape}
-                    variant="outline"
-                    className={`rounded-full transition-colors ${
-                      selectedModalShape === shape 
-                        ? "bg-[#CD19FF] text-white hover:bg-[#CD19FF]" 
-                        : "bg-white text-black hover:bg-gray-100"
-                    }`}
-                    onClick={() => setSelectedModalShape(shape === selectedModalShape ? null : shape)}
-                  >
-                    {shape}
-                  </Button>
-                ))}
-              </div>
-
-              <div className="space-y-4">
-                <div
-                  className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center"
-                  onDrop={handleDrop}
-                  onDragOver={handleDragOver}
-                >
-                  <p className="text-gray-500 mb-2">
-                    이미지를 드래그하여 업로드하거나
-                  </p>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    accept="image/*"
-                    multiple
-                  />
-                  <Button 
-                    variant="outline" 
-                    className="mx-auto"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    파일 선택하기
-                  </Button>
-                  <p className="text-xs text-gray-500 mt-2">
-                    여러 파일을 한 번에 선택할 수 있습니다
-                  </p>
-                </div>
-
-                {uploadedFiles.length > 0 && (
-                  <div className="border rounded-lg p-4 space-y-2">
-                    <p className="font-medium">선택된 파일 ({uploadedFiles.length})</p>
-                    <div className="max-h-32 overflow-y-auto space-y-1">
-                      {uploadedFiles.map((file, index) => (
-                        <p key={index} className="text-sm text-gray-600">
-                          {file.name}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <Button 
-                  className="w-full bg-[#CD19FF] hover:bg-[#CD19FF]/90 text-white"
-                  onClick={handleUploadComplete}
-                  disabled={uploadedFiles.length === 0}
-                >
-                  {uploadedFiles.length}개 파일 업로드
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+            <IconCirclePlus className="w-5 h-5 mr-2" />
+            업로드하기
+          </Button>
           <Button className="bg-black text-white hover:bg-gray-900">
-            <IconDownload className="w-5 h-5" />
+            <IconDownload className="w-5 h-5 mr-2" />
             다운로드
           </Button>
         </div>
@@ -230,72 +98,35 @@ export default function FirstCutPage() {
         <h1 className="text-2xl font-bold">
           총 <span className="text-[#CD19FF]">{filteredImages.length}</span>개
         </h1>
-        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogTrigger asChild>
-            <Button 
-              variant="ghost" 
-              className="text-gray-600 hover:text-gray-900"
-              disabled={selectedImages.length === 0}
-            >
-              <IconTrash className="w-5 h-5" />
-              <span className="text-[#FF3535]">삭제하기</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md w-full">
-            <DialogHeader>
-              <DialogTitle>이미지 삭제</DialogTitle>
-            </DialogHeader>
-            <div className="py-4">
-              <p className="text-center text-gray-600 mb-4">
-                선택한 {selectedImages.length}개의 이미지를 삭제하시겠습니까?
-              </p>
-              <div className="flex justify-center gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsDeleteDialogOpen(false)}
-                >
-                  취소
-                </Button>
-                <Button
-                  className="bg-[#FF3535] hover:bg-[#FF3535]/90 text-white"
-                  onClick={handleDelete}
-                >
-                  삭제
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button 
+          variant="ghost" 
+          className="text-gray-600 hover:text-gray-900"
+          onClick={() => setIsDeleteDialogOpen(true)}
+          disabled={selectedImages.length === 0}
+        >
+          <IconTrash className="w-5 h-5" />
+          <span className="text-[#FF3535]">삭제하기</span>
+        </Button>
       </div>
 
-      {/* 이미지 그리드 */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 pl-6 pr-[72px]">
-        {filteredImages.map((image) => (
-          <div 
-            key={image.id} 
-            className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2 cursor-pointer"
-            onClick={() => toggleImageSelection(image.id)}
-          >
-            {selectedImages.includes(image.id) && (
-              <div className="absolute top-1 right-1 z-10">
-                <IconCheck className="w-5 h-5" />
-              </div>
-            )}
-            <div className="relative aspect-square rounded-lg overflow-hidden">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-200"
-              />
-            </div>
-            <div className="p-2 space-y-1 bg-white flex flex-col justify-center items-center">
-              <p className="text-xs text-gray-600">{image.uploadedBy}</p>
-              <p className="text-xs text-gray-600">{image.date}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      <ImageGrid
+        images={filteredImages}
+        selectedImages={selectedImages}
+        onImageSelect={toggleImageSelection}
+      />
+
+      <UploadModal
+        isOpen={isUploadOpen}
+        onOpenChange={setIsUploadOpen}
+        onUploadComplete={handleUploadComplete}
+      />
+
+      <DeleteDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        selectedCount={selectedImages.length}
+        onDelete={handleDelete}
+      />
     </div>
   )
 } 
