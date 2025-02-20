@@ -7,6 +7,13 @@ import IconCirclePlus from "@/assets/icons/icons_circle_plus.svg"
 import IconDownload from "@/assets/icons/icon_download.svg"
 import IconCheck from "@/assets/icons/icon_check.svg"
 import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 // Mock 데이터
 const mockImages = Array.from({ length: 9 }, (_, i) => ({
@@ -22,6 +29,7 @@ const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발�
 export default function FirstCutPage() {
   const [selectedShape, setSelectedShape] = useState<string | null>(null)
   const [selectedImages, setSelectedImages] = useState<number[]>([])
+  const [isUploadOpen, setIsUploadOpen] = useState(false)
 
   const toggleImageSelection = (id: number) => {
     setSelectedImages(prev => 
@@ -52,13 +60,32 @@ export default function FirstCutPage() {
           ))}
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="bg-white text-black hover:bg-gray-100"
-          >
-            <IconCirclePlus className="w-5 h-5" />
-            업로드하기
-          </Button>
+          <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                className="bg-white text-black hover:bg-gray-100"
+              >
+                <IconCirclePlus className="w-5 h-5 mr-2" />
+                업로드하기
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>이미지 업로드</DialogTitle>
+              </DialogHeader>
+              <div className="mt-4">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                  <p className="text-gray-500 mb-2">
+                    이미지를 드래그하여 업로드하거나
+                  </p>
+                  <Button variant="outline" className="mx-auto">
+                    파일 선택하기
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           <Button className="bg-black text-white hover:bg-gray-900">
             <IconDownload className="w-5 h-5" />
             결과처리
