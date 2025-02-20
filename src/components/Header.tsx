@@ -1,10 +1,14 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import Link from "next/link"
 import Image from "next/image"
-import IconHamburger from "@/assets/icons/icon_hamburger.svg"
+import HamburgerIcon from "@/assets/icons/icon_hamburger.svg"
+import FolderIcon from "@/assets/icons/icon_folder.svg"
+import PlusIcon from "@/assets/icons/icon_plus.svg"
+import ChevronRightIcon from "@/assets/icons/icon_chevron_right.svg"
+import { Separator } from "@/components/ui/separator"
 
 export function Header() {
   return (
@@ -13,10 +17,35 @@ export function Header() {
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="mr-4 text-white w-[28px] h-[28px] cursor-pointer">
-              <IconHamburger className='w-[28px] h-[28px]' />
+              <HamburgerIcon className='w-[28px] h-[28px]' />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
+          <SheetContent side="left" className="w-[300px]">
+            <SheetTitle className="sr-only">Menu</SheetTitle>
+            
+            {/* 첫 번째 줄: 폴더 */}
+            <div className="px-[32px] pr-[36px]">
+              <div className="flex items-center justify-between">
+                <div className="flex justify-center items-center gap-2">
+                  <FolderIcon className="w-5 h-5 flex-shrink-0" />
+                    <span className="h-5">폴더</span>
+                </div>
+                <PlusIcon className="w-5 h-5" />
+              </div>
+            </div>
+
+            {/* 구분선 */}
+            <Separator className="my-4 bg-gray-700" />
+
+            {/* 네일 조합 */}
+            <div className="px-[32px] pr-[36px]">
+              <div className="flex items-center justify-between">
+                <span className="h-[20px] inline-flex items-center">네일 조합</span>
+                <ChevronRightIcon className="w-5 h-5" />
+              </div>
+            </div>
+          </SheetContent>
         </Sheet>
 
         {/* 로고 */}
