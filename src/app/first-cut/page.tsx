@@ -5,9 +5,10 @@ import Image from "next/image"
 import IconTrash from "@/assets/icons/icon_trash.svg"
 import IconCirclePlus from "@/assets/icons/icons_circle_plus.svg"
 import IconDownload from "@/assets/icons/icon_download.svg"
+import { useState } from "react"
 
 // Mock 데이터
-const mockImages = Array.from({ length: 12 }, (_, i) => ({
+const mockImages = Array.from({ length: 9 }, (_, i) => ({
   id: i + 1,
   src: "/mocks/tip.png",
   alt: `네일 이미지 ${i + 1}`,
@@ -18,16 +19,23 @@ const mockImages = Array.from({ length: 12 }, (_, i) => ({
 const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발레리나"]
 
 export default function FirstCutPage() {
+  const [selectedShape, setSelectedShape] = useState<string | null>(null)
+
   return (
     <div className="py-6 max-w-6xl mx-auto">
       {/* 필터 및 버튼 행 */}
-      <div className="flex items-center justify-between mb-12 pl-6 pr-[72px]">
+      <div className="flex items-center justify-between mb-4 pl-6 pr-[72px]">
         <div className="flex gap-2">
           {tipShapes.map((shape) => (
             <Button
               key={shape}
               variant="outline"
-              className="rounded-full bg-white text-black hover:bg-gray-100"
+              className={`rounded-full transition-colors ${
+                selectedShape === shape 
+                  ? "bg-[#CD19FF] text-white hover:text-white hover:bg-[#CD19FF]" 
+                  : "bg-white text-black hover:bg-gray-100"
+              }`}
+              onClick={() => setSelectedShape(shape === selectedShape ? null : shape)}
             >
               {shape}
             </Button>
