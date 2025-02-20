@@ -35,7 +35,7 @@ export default function FirstCutPage() {
       alt: `네일 이미지 ${i + 1}`,
       uploadedBy: "김민지",
       date: "2024-01-15",
-      shape: tipShapes[i % tipShapes.length]   
+      shape: tipShapes[Math.floor(Math.random() * tipShapes.length)]
     }))
   )
   const [selectedShape, setSelectedShape] = useState<string | null>(null)
@@ -44,6 +44,11 @@ export default function FirstCutPage() {
   const [isUploadOpen, setIsUploadOpen] = useState(false)
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // 선택된 shape에 따라 이미지 필터링
+  const filteredImages = selectedShape
+    ? mockImages.filter(image => image.shape === selectedShape)
+    : mockImages
 
   const toggleImageSelection = (id: number) => {
     setSelectedImages(prev => 
@@ -136,7 +141,7 @@ export default function FirstCutPage() {
                 <DialogTitle>이미지 업로드</DialogTitle>
               </DialogHeader>
 
-              {/* 팁 모양 선택 칩 (별도의 상태 사용) */}
+              {/* 팁 모양 선택 칩 */}
               <div className="flex gap-2 flex-wrap">
                 {tipShapes.map((shape) => (
                   <Button
@@ -144,7 +149,7 @@ export default function FirstCutPage() {
                     variant="outline"
                     className={`rounded-full transition-colors ${
                       selectedModalShape === shape 
-                        ? "bg-[#CD19FF] text-white hover:bg-[#CD19FF]" 
+                        ? "bg-[#CD19FF] text-white hover:text-white hover:bg-[#CD19FF]" 
                         : "bg-white text-black hover:bg-gray-100"
                     }`}
                     onClick={() => setSelectedModalShape(shape === selectedModalShape ? null : shape)}
@@ -216,27 +221,21 @@ export default function FirstCutPage() {
       {/* 제목 및 삭제 행 */}
       <div className="flex items-center justify-between mb-8 pl-6 pr-[72px]">
         <h1 className="text-2xl font-bold">
-          총 <span className="text-[#CD19FF]">{mockImages.length}</span>개
+          총 <span className="text-[#CD19FF]">{filteredImages.length}</span>개
         </h1>
         <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
           <IconTrash className="w-5 h-5" />
-          <span className="text-[#FF3535]">삭제하기</span>
+          <span className="ml-2">삭제하기</span>
         </Button>
       </div>
 
       {/* 이미지 그리드 */}
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 pl-6 pr-[72px]">
-        {mockImages.map((image) => (
+        {filteredImages.map((image) => (
           <div 
             key={image.id} 
-            className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2 cursor-pointer"
-            onClick={() => toggleImageSelection(image.id)}
+            className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2"
           >
-            {selectedImages.includes(image.id) && (
-              <div className="absolute top-1 right-1 z-10">
-                <IconCheck className="w-5 h-5" />
-              </div>
-            )}
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
                 src={image.src}
