@@ -6,9 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-
-const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발레리나"]
+} from "@/components/ui/dialog" 
 
 interface UploadModalProps {
   isOpen: boolean
@@ -67,7 +65,6 @@ export function UploadModal({ isOpen, onOpenChange, onUploadComplete }: UploadMo
 
         {/* 팁 모양 선택 칩 */}
         <TipShapeChips
-          shapes={tipShapes}
           selectedShape={selectedShape}
           onShapeSelect={setSelectedShape}
         />

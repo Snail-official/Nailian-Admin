@@ -19,8 +19,6 @@ interface MockImage {
   shape?: string
 }
 
-const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발레리나"]
-
 export default function FirstCutPage() {
   const [mockImages, setMockImages] = useState<MockImage[]>(
     Array.from({ length: 9 }, (_, i) => ({
@@ -29,7 +27,6 @@ export default function FirstCutPage() {
       alt: `네일 이미지 ${i + 1}`,
       uploadedBy: "김민지",
       date: "2024-01-15",
-      shape: tipShapes[Math.floor(Math.random() * tipShapes.length)]
     }))
   )
   const [selectedShape, setSelectedShape] = useState<string | null>(null)
@@ -73,7 +70,6 @@ export default function FirstCutPage() {
       {/* 필터 및 버튼 행 */}
       <div className="flex items-center justify-between mb-4 pl-6 pr-[72px]">
         <TipShapeChips
-          shapes={tipShapes}
           selectedShape={selectedShape}
           onShapeSelect={setSelectedShape}
         />
