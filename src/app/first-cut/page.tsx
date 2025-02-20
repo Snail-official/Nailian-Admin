@@ -42,6 +42,7 @@ export default function FirstCutPage() {
   const [selectedModalShape, setSelectedModalShape] = useState<string | null>(null)
   const [selectedImages, setSelectedImages] = useState<number[]>([])
   const [isUploadOpen, setIsUploadOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -96,6 +97,12 @@ export default function FirstCutPage() {
     setSelectedModalShape(null)
   }
 
+  const handleDelete = () => {
+    setMockImages(prev => prev.filter(image => !selectedImages.includes(image.id)))
+    setSelectedImages([])
+    setIsDeleteDialogOpen(false)
+  }
+
   return (
     <div className="py-6 max-w-6xl mx-auto">
       {/* 필터 및 버튼 행 */}
@@ -136,12 +143,12 @@ export default function FirstCutPage() {
                 업로드하기
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md w-full">
+            <DialogContent className="max-w-lg w-full">
               <DialogHeader>
                 <DialogTitle>이미지 업로드</DialogTitle>
               </DialogHeader>
 
-              {/* 팁 모양 선택 칩 */}
+              {/* 팁 모양 선택 칩 (별도의 상태 사용) */}
               <div className="flex gap-2 flex-wrap">
                 {tipShapes.map((shape) => (
                   <Button
@@ -149,7 +156,7 @@ export default function FirstCutPage() {
                     variant="outline"
                     className={`rounded-full transition-colors ${
                       selectedModalShape === shape 
-                        ? "bg-[#CD19FF] text-white hover:text-white hover:bg-[#CD19FF]" 
+                        ? "bg-[#CD19FF] text-white hover:bg-[#CD19FF]" 
                         : "bg-white text-black hover:bg-gray-100"
                     }`}
                     onClick={() => setSelectedModalShape(shape === selectedModalShape ? null : shape)}
@@ -223,10 +230,42 @@ export default function FirstCutPage() {
         <h1 className="text-2xl font-bold">
           총 <span className="text-[#CD19FF]">{filteredImages.length}</span>개
         </h1>
-        <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-          <IconTrash className="w-5 h-5" />
-          <span className="ml-2">삭제하기</span>
-        </Button>
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogTrigger asChild>
+            <Button 
+              variant="ghost" 
+              className="text-gray-600 hover:text-gray-900"
+              disabled={selectedImages.length === 0}
+            >
+              <IconTrash className="w-5 h-5" />
+              <span className="text-[#FF3535]">삭제하기</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md w-full">
+            <DialogHeader>
+              <DialogTitle>이미지 삭제</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p className="text-center text-gray-600 mb-4">
+                선택한 {selectedImages.length}개의 이미지를 삭제하시겠습니까?
+              </p>
+              <div className="flex justify-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDeleteDialogOpen(false)}
+                >
+                  취소
+                </Button>
+                <Button
+                  className="bg-[#FF3535] hover:bg-[#FF3535]/90 text-white"
+                  onClick={handleDelete}
+                >
+                  삭제
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* 이미지 그리드 */}
@@ -234,8 +273,14 @@ export default function FirstCutPage() {
         {filteredImages.map((image) => (
           <div 
             key={image.id} 
-            className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2"
+            className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2 cursor-pointer"
+            onClick={() => toggleImageSelection(image.id)}
           >
+            {selectedImages.includes(image.id) && (
+              <div className="absolute top-1 right-1 z-10">
+                <IconCheck className="w-5 h-5" />
+              </div>
+            )}
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
                 src={image.src}
