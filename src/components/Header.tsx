@@ -9,8 +9,29 @@ import FolderIcon from "@/assets/icons/icon_folder.svg"
 import PlusIcon from "@/assets/icons/icon_plus.svg"
 import ChevronRightIcon from "@/assets/icons/icon_chevron_right.svg"
 import { Separator } from "@/components/ui/separator"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { useState } from "react"
 
 export function Header() {
+  const [folders, setFolders] = useState<string[]>([])
+  const [newFolderName, setNewFolderName] = useState("")
+  const [open, setOpen] = useState(false)
+
+  const handleCreateFolder = () => {
+    if (newFolderName.trim()) {
+      setFolders([...folders, newFolderName.trim()])
+      setNewFolderName("")
+      setOpen(false)
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-[#191919] backdrop-blur supports-[backdrop-filter]:bg-[#191919]/60">
       <div className="flex w-full h-16 items-center pl-[24px] pr-[72px] ">
@@ -27,23 +48,53 @@ export function Header() {
             {/* 첫 번째 줄: 폴더 */}
             <div className="px-[32px] pr-[36px]">
               <div className="flex items-center justify-between">
-                <div className="flex justify-center items-center gap-2">
+                <div className="flex items-center gap-2">
                   <FolderIcon className="w-5 h-5 flex-shrink-0" />
-                    <span className="h-5">폴더</span>
+                  <div className="flex justify-center items-center">
+                    <span className="leading-[20px]">폴더</span>
+                  </div>
                 </div>
-                <PlusIcon className="w-5 h-5" />
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <button>
+                      <PlusIcon className="w-5 h-5" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>새 폴더 만들기</DialogTitle>
+                    </DialogHeader>
+                    <div className="mt-4 space-y-4">
+                      <Input
+                        type="text" 
+                        placeholder="폴더 이름" 
+                        value={newFolderName}
+                        onChange={(e) => setNewFolderName(e.target.value)}
+                      />
+                      <div className="flex justify-center">
+                        <Button onClick={handleCreateFolder}>
+                          폴더 생성
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
 
             {/* 구분선 */}
             <Separator className="my-4 bg-gray-700" />
 
-            {/* 네일 조합 */}
-            <div className="px-[32px] pr-[36px]">
-              <div className="flex items-center justify-between">
-                <span className="h-[20px] inline-flex items-center">네일 조합</span>
-                <ChevronRightIcon className="w-5 h-5" />
-              </div>
+            {/* 폴더 목록 */}
+            <div className="space-y-4">
+              {folders.map((folder, index) => (
+                <div key={index} className="px-[32px] pr-[36px]">
+                  <div className="flex items-center justify-between">
+                    <span className="h-[20px] inline-flex items-center">{folder}</span>
+                    <ChevronRightIcon className="w-5 h-5" />
+                  </div>
+                </div>
+              ))}
             </div>
           </SheetContent>
         </Sheet>
