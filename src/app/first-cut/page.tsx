@@ -5,6 +5,7 @@ import Image from "next/image"
 import IconTrash from "@/assets/icons/icon_trash.svg"
 import IconCirclePlus from "@/assets/icons/icons_circle_plus.svg"
 import IconDownload from "@/assets/icons/icon_download.svg"
+import IconCheck from "@/assets/icons/icon_check.svg"
 import { useState } from "react"
 
 // Mock 데이터
@@ -20,6 +21,15 @@ const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발�
 
 export default function FirstCutPage() {
   const [selectedShape, setSelectedShape] = useState<string | null>(null)
+  const [selectedImages, setSelectedImages] = useState<number[]>([])
+
+  const toggleImageSelection = (id: number) => {
+    setSelectedImages(prev => 
+      prev.includes(id) 
+        ? prev.filter(imageId => imageId !== id)
+        : [...prev, id]
+    )
+  }
 
   return (
     <div className="py-6 max-w-6xl mx-auto">
@@ -51,14 +61,14 @@ export default function FirstCutPage() {
           </Button>
           <Button className="bg-black text-white hover:bg-gray-900">
             <IconDownload className="w-5 h-5" />
-            다운로드
+            결과처리
           </Button>
         </div>
       </div>
 
       {/* 제목 및 삭제 행 */}
-      <div className="flex items-center justify-between mb-4 pl-6 pr-[72px]">
-      <h1 className="text-2xl font-bold">
+      <div className="flex items-center justify-between mb-8 pl-6 pr-[72px]">
+        <h1 className="text-2xl font-bold">
           총 <span className="text-[#CD19FF]">{mockImages.length}</span>개
         </h1>
         <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
@@ -72,8 +82,14 @@ export default function FirstCutPage() {
         {mockImages.map((image) => (
           <div 
             key={image.id} 
-            className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2"
+            className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2 cursor-pointer"
+            onClick={() => toggleImageSelection(image.id)}
           >
+            {selectedImages.includes(image.id) && (
+              <div className="absolute top-1 right-1 z-10">
+                <IconCheck className="w-5 h-5" />
+              </div>
+            )}
             <div className="relative aspect-square rounded-lg overflow-hidden">
               <Image
                 src={image.src}
