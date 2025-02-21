@@ -9,6 +9,7 @@ import { TipShapeChips } from "@/components/first-cut/TipShapeChips"
 import { ImageGrid } from "@/components/first-cut/ImageGrid"
 import { UploadModal } from "@/components/first-cut/UploadModal"
 import { DeleteDialog } from "@/components/first-cut/DeleteDialog"
+import { DeleteButton } from "@/components/first-cut/DeleteButton"
 
 interface MockImage {
   id: number
@@ -23,7 +24,7 @@ export default function FirstCutPage() {
   const [mockImages, setMockImages] = useState<MockImage[]>(
     Array.from({ length: 9 }, (_, i) => ({
       id: i + 1,
-      src: "/images/tip.png",
+      src: "/mocks/tip.png",
       alt: `네일 이미지 ${i + 1}`,
       uploadedBy: "김민지",
       date: "2024-01-15",
@@ -94,15 +95,10 @@ export default function FirstCutPage() {
         <h1 className="text-2xl font-bold">
           총 <span className="text-[#CD19FF]">{filteredImages.length}</span>개
         </h1>
-        <Button 
-          variant="ghost" 
-          className="text-gray-600 hover:text-gray-900"
+        <DeleteButton 
           onClick={() => setIsDeleteDialogOpen(true)}
           disabled={selectedImages.length === 0}
-        >
-          <IconTrash className="w-5 h-5" />
-          <span className="text-[#FF3535]">삭제하기</span>
-        </Button>
+        />
       </div>
 
       <ImageGrid
