@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import IconScrap from "@/assets/icons/icon_scrap.svg"
-import IconScrapFilled from "@/assets/icons/icon_scrap_filled.svg"
+import ScrapIcon from "@/assets/icons/ScrapIcon.svg"
+import ScrapFilledIcon from "@/assets/icons/ScrapFilledIcon.svg"
 import { useState } from "react"
 import { DeleteButton } from "../delete/DeleteButton"
 import { DeleteDialog } from "../delete/DeleteDialog"
@@ -64,9 +64,9 @@ export function NailDetailModal({
                                 onClick={() => onScrap(tipDetail.id)}
                             >
                                 {tipDetail.isScraped ? (
-                                    <IconScrapFilled className="w-[24px] h-[24px]" />
+                                    <ScrapFilledIcon className="w-[24px] h-[24px]" />
                                 ) : (
-                                    <IconScrap className="w-[24px] h-[24px]" />
+                                    <ScrapIcon className="w-[24px] h-[24px]" />
                                 )}
                             </Button>
                             <Image

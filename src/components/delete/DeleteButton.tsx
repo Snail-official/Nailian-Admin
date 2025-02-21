@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import IconTrash from "@/assets/icons/icon_trash.svg"
+import TrashIcon from "@/assets/icons/TrashIcon.svg"
 
 interface DeleteButtonProps {
   onClick: () => void
@@ -14,7 +14,7 @@ export function DeleteButton({ onClick, disabled = false }: DeleteButtonProps) {
       onClick={onClick}
       disabled={disabled}
     >
-      <IconTrash className="w-5 h-5 mr-2" />
+      <TrashIcon className="w-5 h-5 mr-2" />
       삭제하기
     </Button>
   )

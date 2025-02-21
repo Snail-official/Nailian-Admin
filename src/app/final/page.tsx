@@ -1,15 +1,15 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import IconTrash from "@/assets/icons/icon_trash.svg"
-import IconScrap from "@/assets/icons/icon_scrap.svg"
+import TrashIcon from "@/assets/icons/TrashIcon.svg"
+import ScrapIcon from "@/assets/icons/ScrapIcon.svg"
 import { useState } from "react"
 import { NailShapeChips } from "@/components/filters/NailShapeChips"
 import { NailColorChips } from "@/components/filters/NailColorChips"
 import { NailPatternChips } from "@/components/filters/NailPatternChips"
 import { NailTipGrid } from "@/components/nail/NailTipGrid"
 import { NailDetailModal } from "@/components/nail/NailDetailModal"
-import CirclePlusIcon from "@/assets/icons/icons_circle_plus.svg"
+import CirclePlusIcon from "@/assets/icons/CirclePlusIcon.svg"
 import { useRouter } from "next/navigation"
 
 interface MockImage {
@@ -136,7 +136,7 @@ export default function FinalPage() {
             `}
             onClick={() => setViewMode(prev => prev === 'scraped' ? 'all' : 'scraped')}
           >
-            <IconScrap className={`w-5 h-5 fill-white`} />
+            <ScrapIcon className={`w-5 h-5 fill-white`} />
             <span className="ml-2 font-medium">스크랩북</span>
           </Button>
           <Button
@@ -150,7 +150,7 @@ export default function FinalPage() {
             `}
             onClick={() => setViewMode(prev => prev === 'deleted' ? 'all' : 'deleted')}
           >
-            <IconTrash className={`w-5 h-5`} />
+            <TrashIcon className={`w-5 h-5`} />
             <span className="ml-2 font-medium">삭제된 네일</span>
           </Button>
         </div>

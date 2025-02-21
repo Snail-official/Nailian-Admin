@@ -1,5 +1,5 @@
 import Image from "next/image"
-import IconCheck from "@/assets/icons/icon_check.svg"
+import CheckIcon from "@/assets/icons/CheckIcon.svg"
 
 interface MockImage {
   id: number
@@ -27,7 +27,7 @@ export function NailTipGrid({ images, selectedImages, onImageSelect }: NailTipGr
         >
           {selectedImages.includes(image.id) && (
             <div className="absolute top-1 right-1 z-10">
-              <IconCheck className="w-5 h-5" />
+              <CheckIcon className="w-5 h-5" />
             </div>
           )}
           <div className="relative aspect-square rounded-lg overflow-hidden">
