@@ -5,8 +5,10 @@ import IconScrap from "@/assets/icons/icon_scrap.svg"
 import IconScrapFilled from "@/assets/icons/icon_scrap_filled.svg"
 import { useState } from "react"
 import { DeleteButton } from "./DeleteButton"
+import { DeleteDialog } from "./DeleteDialog"
 
-interface ImageDetailModalProps {
+
+interface NailDetailModalProps {
     isOpen: boolean
     tipId: number
     onOpenChange: (open: boolean) => void
@@ -20,7 +22,7 @@ export function NailDetailModal({
     tipId,
     onDelete,
     onScrap
-}: ImageDetailModalProps) {
+}: NailDetailModalProps) {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const tipDetail = {
         id: tipId,
@@ -112,30 +114,12 @@ export function NailDetailModal({
             </Dialog>
 
             {/* 삭제 확인 모달 */}
-            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <DialogContent className="max-w-sm">
-                    <DialogTitle className="text-lg font-bold mb-4">
-                        네일 삭제
-                    </DialogTitle>
-                    <p className="text-gray-600 mb-6">
-                        해당 네일을 삭제하시겠습니까?
-                    </p>
-                    <div className="flex justify-end gap-2">
-                        <Button
-                            variant="outline"
-                            onClick={() => setIsDeleteDialogOpen(false)}
-                        >
-                            취소
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={handleDelete}
-                        >
-                            삭제
-                        </Button>
-                    </div>
-                </DialogContent>
-            </Dialog>
+            <DeleteDialog
+                isOpen={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+                selectedCount={1}
+                onDelete={handleDelete}
+            />
         </>
     )
 } 
