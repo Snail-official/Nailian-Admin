@@ -11,6 +11,7 @@ import { NailTipGrid } from "@/components/nail/NailTipGrid"
 import { NailDetailModal } from "@/components/nail/NailDetailModal"
 import CirclePlusIcon from "@/assets/icons/CirclePlusIcon.svg"
 import { useRouter } from "next/navigation"
+import { NailFilterSection } from "@/components/filters/NailFilterSection"
 
 interface MockImage {
   id: number
@@ -95,29 +96,14 @@ export default function FinalPage() {
         </Button>
       </div>
       {/* 필터 섹션 */}
-      <div className="space-y-4 mb-8 pl-6 pr-[72px]">
-        <div className="flex items-center gap-4">
-          <h2 className="text-lg font-medium">쉐입</h2>
-          <NailShapeChips
-            selectedShape={selectedShape}
-            onShapeSelect={setSelectedShape}
-          />
-        </div>
-        <div className="flex items-center gap-4">
-          <h2 className="text-lg font-medium">색상</h2>
-          <NailColorChips
-            selectedValue={selectedColor}
-            onSelect={setSelectedColor}
-          />
-        </div>
-        <div className="flex items-center gap-4">
-          <h2 className="text-lg font-medium">패턴</h2>
-          <NailPatternChips
-            selectedValue={selectedPattern}
-            onSelect={setSelectedPattern}
-          />
-        </div>
-      </div>
+      <NailFilterSection
+        selectedShape={selectedShape}
+        selectedColor={selectedColor}
+        selectedPattern={selectedPattern}
+        onShapeSelect={setSelectedShape}
+        onColorSelect={setSelectedColor}
+        onPatternSelect={setSelectedPattern}
+      />
 
       {/* 제목 및 버튼 행 */}
       <div className="flex items-center justify-between mb-8 pl-6 pr-[72px]">
