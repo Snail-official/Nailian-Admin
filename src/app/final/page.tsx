@@ -9,6 +9,8 @@ import { NailColorChips } from "@/components/filters/NailColorChips"
 import { NailPatternChips } from "@/components/filters/NailPatternChips"
 import { NailTipGrid } from "@/components/nail/NailTipGrid"
 import { NailDetailModal } from "@/components/nail/NailDetailModal"
+import CirclePlusIcon from "@/assets/icons/icons_circle_plus.svg"
+import { useRouter } from "next/navigation"
 
 interface MockImage {
   id: number
@@ -41,6 +43,7 @@ export default function FinalPage() {
   const [selectedImages, setSelectedImages] = useState<number[]>([])
   const [viewMode, setViewMode] = useState<'all' | 'deleted' | 'scraped'>('all')
   const [selectedTipIdForDetail, setSelectedTipIdForDetail] = useState<number | null>(null)
+  const router = useRouter()
 
   const filteredImages = mockImages.filter(image => {
     // 삭제된 이미지 필터
@@ -80,6 +83,17 @@ export default function FinalPage() {
 
   return (
     <div className="py-6 max-w-6xl mx-auto">
+      {/* 조합하기 버튼 */}
+      <div className="flex justify-end pr-[72px]">
+        <Button 
+          variant="outline" 
+          className="bg-white text-black hover:bg-gray-50"
+          onClick={() => router.push("/combination")}
+        >
+          <CirclePlusIcon className="h-5 w-5" />
+          조합만들기
+        </Button>
+      </div>
       {/* 필터 섹션 */}
       <div className="space-y-4 mb-8 pl-6 pr-[72px]">
         <div className="flex items-center gap-4">
