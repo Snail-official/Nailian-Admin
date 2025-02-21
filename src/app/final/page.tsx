@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button"
 import IconTrash from "@/assets/icons/icon_trash.svg"
 import IconScrap from "@/assets/icons/icon_scrap.svg"
 import { useState } from "react"
-import { TipShapeChips } from "@/components/first-cut/TipShapeChips"
-import { TipColorChips } from "@/components/first-cut/TipColorChips"
-import { TipPatternChips } from "@/components/first-cut/TipPatternChips"
-import { ImageGrid } from "@/components/first-cut/ImageGrid"
-import { NailDetailModal } from "@/components/first-cut/NailDetailModal"
+import { NailShapeChips } from "@/components/filters/NailShapeChips"
+import { NailColorChips } from "@/components/filters/NailColorChips"
+import { NailPatternChips } from "@/components/filters/NailPatternChips"
+import { NailTipGrid } from "@/components/nail/NailTipGrid"
+import { NailDetailModal } from "@/components/nail/NailDetailModal"
 
 interface MockImage {
   id: number
@@ -84,21 +84,21 @@ export default function FinalPage() {
       <div className="space-y-4 mb-8 pl-6 pr-[72px]">
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-medium">쉐입</h2>
-          <TipShapeChips
+          <NailShapeChips
             selectedShape={selectedShape}
             onShapeSelect={setSelectedShape}
           />
         </div>
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-medium">색상</h2>
-          <TipColorChips
+          <NailColorChips
             selectedValue={selectedColor}
             onSelect={setSelectedColor}
           />
         </div>
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-medium">패턴</h2>
-          <TipPatternChips
+          <NailPatternChips
             selectedValue={selectedPattern}
             onSelect={setSelectedPattern}
           />
@@ -142,7 +142,7 @@ export default function FinalPage() {
         </div>
       </div>
 
-      <ImageGrid
+      <NailTipGrid
         images={filteredImages}
         selectedImages={selectedImages}
         onImageSelect={handleTipImageClick}

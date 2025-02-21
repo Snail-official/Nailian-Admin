@@ -4,8 +4,8 @@ import Image from "next/image"
 import IconScrap from "@/assets/icons/icon_scrap.svg"
 import IconScrapFilled from "@/assets/icons/icon_scrap_filled.svg"
 import { useState } from "react"
-import { DeleteButton } from "./DeleteButton"
-import { DeleteDialog } from "./DeleteDialog"
+import { DeleteButton } from "../delete/DeleteButton"
+import { DeleteDialog } from "../delete/DeleteDialog"
 
 
 interface NailDetailModalProps {

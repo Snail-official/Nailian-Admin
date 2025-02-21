@@ -3,13 +3,13 @@
 import { Button } from "@/components/ui/button"
 import IconCirclePlus from "@/assets/icons/icons_circle_plus.svg"
 import IconDownload from "@/assets/icons/icon_download.svg"
-import IconTrash from "@/assets/icons/icon_trash.svg"
 import { useState } from "react"
-import { TipShapeChips } from "@/components/first-cut/TipShapeChips"
-import { ImageGrid } from "@/components/first-cut/ImageGrid"
-import { UploadModal } from "@/components/first-cut/UploadModal"
-import { DeleteDialog } from "@/components/first-cut/DeleteDialog"
-import { DeleteButton } from "@/components/first-cut/DeleteButton"
+
+import { NailTipGrid } from "@/components/nail/NailTipGrid"
+import { UploadModal } from "@/components/upload/UploadModal"
+import { DeleteDialog } from "@/components/delete/DeleteDialog"
+import { DeleteButton } from "@/components/delete/DeleteButton"
+import { NailShapeChips } from "@/components/filters/NailShapeChips"
 
 interface MockImage {
   id: number
@@ -70,7 +70,7 @@ export default function FirstCutPage() {
     <div className="py-6 max-w-6xl mx-auto">
       {/* 필터 및 버튼 행 */}
       <div className="flex items-center justify-between mb-4 pl-6 pr-[72px]">
-        <TipShapeChips
+        <NailShapeChips
           selectedShape={selectedShape}
           onShapeSelect={setSelectedShape}
         />
@@ -101,7 +101,7 @@ export default function FirstCutPage() {
         />
       </div>
 
-      <ImageGrid
+      <NailTipGrid
         images={filteredImages}
         selectedImages={selectedImages}
         onImageSelect={toggleImageSelection}

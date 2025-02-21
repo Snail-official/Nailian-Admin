@@ -2,12 +2,12 @@ import { Button } from "../ui/button"
 
 const tipColors = ["화이트", "블랙", "옐로우", "핑크", "그린", "베이지", "블루", "실버"]
 
-interface TipColorChipsProps {
+interface NailColorChipsProps {
   selectedValue: string | null
   onSelect: (value: string | null) => void
 }
 
-export function TipColorChips({ selectedValue, onSelect }: TipColorChipsProps) {
+export function NailColorChips({ selectedValue, onSelect }: NailColorChipsProps) {
   return (
     <div className="flex gap-2 flex-wrap">
       {tipColors.map((color) => (

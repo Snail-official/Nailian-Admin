@@ -10,13 +10,13 @@ interface MockImage {
   shape?: string
 }
 
-interface ImageGridProps {
+interface NailTipGridProps {
   images: MockImage[]
   selectedImages: number[]
   onImageSelect: (id: number) => void
 }
 
-export function ImageGrid({ images, selectedImages, onImageSelect }: ImageGridProps) {
+export function NailTipGrid({ images, selectedImages, onImageSelect }: NailTipGridProps) {
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 pl-6 pr-[72px]">
       {images.map((image) => (
