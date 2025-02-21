@@ -15,7 +15,6 @@ import {
 import { Check, ChevronDown } from "lucide-react"
 
 interface FolderSaveControlsProps {
-  selectedNails: string[]
   selectedFolders: string[]
   folders: { id: string; name: string }[]
   onFolderToggle: (folderId: string) => void
@@ -23,21 +22,13 @@ interface FolderSaveControlsProps {
 }
 
 export function FolderSaveControls({
-  selectedNails,
   selectedFolders,
   folders,
   onFolderToggle,
   onSave,
 }: FolderSaveControlsProps) {
   return (
-    <div className="flex justify-between mb-4">
-      <div className="flex gap-2">
-        {selectedNails.map((nail) => (
-          <span key={nail} className="px-2 py-1 bg-gray-100 rounded">
-            {nail}
-          </span>
-        ))}
-      </div>
+    <div className="flex justify-end mb-4">
       <div className="flex gap-2">
         <Popover>
           <PopoverTrigger asChild>
