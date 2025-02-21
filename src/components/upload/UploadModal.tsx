@@ -1,14 +1,13 @@
 import React, { useState, useRef } from 'react'
 import { Button } from "@/components/ui/button"
-import { TipShapeChips } from "./TipShapeChips"
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-
-const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발레리나"]
+} from "@/components/ui/dialog" 
+import { NailShapeChips } from '../filters/NailShapeChips'
 
 interface UploadModalProps {
   isOpen: boolean
@@ -66,8 +65,7 @@ export function UploadModal({ isOpen, onOpenChange, onUploadComplete }: UploadMo
         </DialogHeader>
 
         {/* 팁 모양 선택 칩 */}
-        <TipShapeChips
-          shapes={tipShapes}
+        <NailShapeChips
           selectedShape={selectedShape}
           onShapeSelect={setSelectedShape}
         />

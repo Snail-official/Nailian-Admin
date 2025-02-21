@@ -22,7 +22,10 @@ export function DeleteDialog({ isOpen, onOpenChange, selectedCount, onDelete }: 
         </DialogHeader>
         <div className="py-4">
           <p className="text-center text-gray-600 mb-4">
-            선택한 {selectedCount}개의 이미지를 삭제하시겠습니까?
+            {selectedCount === 1 
+              ? "해당 네일을 삭제하시겠습니까?"
+              : `선택한 ${selectedCount}개의 이미지를 삭제하시겠습니까?`
+            }
           </p>
           <div className="flex justify-center gap-2">
             <Button

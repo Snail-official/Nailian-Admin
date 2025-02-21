@@ -3,12 +3,13 @@
 import { Button } from "@/components/ui/button"
 import IconCirclePlus from "@/assets/icons/icons_circle_plus.svg"
 import IconDownload from "@/assets/icons/icon_download.svg"
-import IconTrash from "@/assets/icons/icon_trash.svg"
 import { useState } from "react"
-import { TipShapeChips } from "@/components/first-cut/TipShapeChips"
-import { ImageGrid } from "@/components/first-cut/ImageGrid"
-import { UploadModal } from "@/components/first-cut/UploadModal"
-import { DeleteDialog } from "@/components/first-cut/DeleteDialog"
+
+import { NailTipGrid } from "@/components/nail/NailTipGrid"
+import { UploadModal } from "@/components/upload/UploadModal"
+import { DeleteDialog } from "@/components/delete/DeleteDialog"
+import { DeleteButton } from "@/components/delete/DeleteButton"
+import { NailShapeChips } from "@/components/filters/NailShapeChips"
 
 interface MockImage {
   id: number
@@ -19,17 +20,14 @@ interface MockImage {
   shape?: string
 }
 
-const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발레리나"]
-
 export default function FirstCutPage() {
   const [mockImages, setMockImages] = useState<MockImage[]>(
     Array.from({ length: 9 }, (_, i) => ({
       id: i + 1,
-      src: "/images/tip.png",
+      src: "/mocks/tip.png",
       alt: `네일 이미지 ${i + 1}`,
       uploadedBy: "김민지",
       date: "2024-01-15",
-      shape: tipShapes[Math.floor(Math.random() * tipShapes.length)]
     }))
   )
   const [selectedShape, setSelectedShape] = useState<string | null>(null)
@@ -72,8 +70,7 @@ export default function FirstCutPage() {
     <div className="py-6 max-w-6xl mx-auto">
       {/* 필터 및 버튼 행 */}
       <div className="flex items-center justify-between mb-4 pl-6 pr-[72px]">
-        <TipShapeChips
-          shapes={tipShapes}
+        <NailShapeChips
           selectedShape={selectedShape}
           onShapeSelect={setSelectedShape}
         />
@@ -98,18 +95,13 @@ export default function FirstCutPage() {
         <h1 className="text-2xl font-bold">
           총 <span className="text-[#CD19FF]">{filteredImages.length}</span>개
         </h1>
-        <Button 
-          variant="ghost" 
-          className="text-gray-600 hover:text-gray-900"
+        <DeleteButton 
           onClick={() => setIsDeleteDialogOpen(true)}
           disabled={selectedImages.length === 0}
-        >
-          <IconTrash className="w-5 h-5" />
-          <span className="text-[#FF3535]">삭제하기</span>
-        </Button>
+        />
       </div>
 
-      <ImageGrid
+      <NailTipGrid
         images={filteredImages}
         selectedImages={selectedImages}
         onImageSelect={toggleImageSelection}

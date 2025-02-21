@@ -1,15 +1,16 @@
 import { Button } from "../ui/button"
 
-interface TipShapeChipsProps {
-  shapes: string[]
+const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발레리나"]
+
+interface NailShapeChipsProps {
   selectedShape: string | null
   onShapeSelect: (shape: string | null) => void
 }
 
-export function TipShapeChips({ shapes, selectedShape, onShapeSelect }: TipShapeChipsProps) {
+export function NailShapeChips({ selectedShape, onShapeSelect }: NailShapeChipsProps) {
   return (
     <div className="flex gap-2 flex-wrap">
-      {shapes.map((shape) => (
+      {tipShapes.map((shape) => (
         <Button
           key={shape}
           variant="outline"
