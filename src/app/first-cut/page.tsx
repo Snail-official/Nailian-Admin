@@ -1,10 +1,9 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import IconCirclePlus from "@/assets/icons/icons_circle_plus.svg"
-import IconDownload from "@/assets/icons/icon_download.svg"
+import CirclePlusIcon from "@/assets/icons/CirclePlusIcon.svg"
+import DownloadIcon from "@/assets/icons/DownloadIcon.svg"  
 import { useState } from "react"
-
 import { NailTipGrid } from "@/components/nail/NailTipGrid"
 import { UploadModal } from "@/components/upload/UploadModal"
 import { DeleteDialog } from "@/components/delete/DeleteDialog"
@@ -80,11 +79,11 @@ export default function FirstCutPage() {
             className="bg-white text-black hover:bg-gray-100"
             onClick={() => setIsUploadOpen(true)}
           >
-            <IconCirclePlus className="w-5 h-5 mr-2" />
+            <CirclePlusIcon className="w-5 h-5 mr-2" />
             업로드하기
           </Button>
           <Button className="bg-black text-white hover:bg-gray-900">
-            <IconDownload className="w-5 h-5 mr-2" />
+            <DownloadIcon className="w-5 h-5 mr-2" />
             다운로드
           </Button>
         </div>

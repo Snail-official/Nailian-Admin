@@ -1,14 +1,17 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import IconTrash from "@/assets/icons/icon_trash.svg"
-import IconScrap from "@/assets/icons/icon_scrap.svg"
+import TrashIcon from "@/assets/icons/TrashIcon.svg"
+import ScrapIcon from "@/assets/icons/ScrapIcon.svg"
 import { useState } from "react"
 import { NailShapeChips } from "@/components/filters/NailShapeChips"
 import { NailColorChips } from "@/components/filters/NailColorChips"
 import { NailPatternChips } from "@/components/filters/NailPatternChips"
 import { NailTipGrid } from "@/components/nail/NailTipGrid"
 import { NailDetailModal } from "@/components/nail/NailDetailModal"
+import CirclePlusIcon from "@/assets/icons/CirclePlusIcon.svg"
+import { useRouter } from "next/navigation"
+import { NailFilterSection } from "@/components/filters/NailFilterSection"
 
 interface MockImage {
   id: number
@@ -41,6 +44,7 @@ export default function FinalPage() {
   const [selectedImages, setSelectedImages] = useState<number[]>([])
   const [viewMode, setViewMode] = useState<'all' | 'deleted' | 'scraped'>('all')
   const [selectedTipIdForDetail, setSelectedTipIdForDetail] = useState<number | null>(null)
+  const router = useRouter()
 
   const filteredImages = mockImages.filter(image => {
     // 삭제된 이미지 필터
@@ -80,30 +84,26 @@ export default function FinalPage() {
 
   return (
     <div className="py-6 max-w-6xl mx-auto">
-      {/* 필터 섹션 */}
-      <div className="space-y-4 mb-8 pl-6 pr-[72px]">
-        <div className="flex items-center gap-4">
-          <h2 className="text-lg font-medium">쉐입</h2>
-          <NailShapeChips
-            selectedShape={selectedShape}
-            onShapeSelect={setSelectedShape}
-          />
-        </div>
-        <div className="flex items-center gap-4">
-          <h2 className="text-lg font-medium">색상</h2>
-          <NailColorChips
-            selectedValue={selectedColor}
-            onSelect={setSelectedColor}
-          />
-        </div>
-        <div className="flex items-center gap-4">
-          <h2 className="text-lg font-medium">패턴</h2>
-          <NailPatternChips
-            selectedValue={selectedPattern}
-            onSelect={setSelectedPattern}
-          />
-        </div>
+      {/* 조합하기 버튼 */}
+      <div className="flex justify-end pr-[72px]">
+        <Button 
+          variant="outline" 
+          className="bg-white text-black hover:bg-gray-50"
+          onClick={() => router.push("/combination")}
+        >
+          <CirclePlusIcon className="h-5 w-5" />
+          조합만들기
+        </Button>
       </div>
+      {/* 필터 섹션 */}
+      <NailFilterSection
+        selectedShape={selectedShape}
+        selectedColor={selectedColor}
+        selectedPattern={selectedPattern}
+        onShapeSelect={setSelectedShape}
+        onColorSelect={setSelectedColor}
+        onPatternSelect={setSelectedPattern}
+      />
 
       {/* 제목 및 버튼 행 */}
       <div className="flex items-center justify-between mb-8 pl-6 pr-[72px]">
@@ -122,7 +122,7 @@ export default function FinalPage() {
             `}
             onClick={() => setViewMode(prev => prev === 'scraped' ? 'all' : 'scraped')}
           >
-            <IconScrap className={`w-5 h-5 fill-white`} />
+            <ScrapIcon className={`w-5 h-5 fill-white`} />
             <span className="ml-2 font-medium">스크랩북</span>
           </Button>
           <Button
@@ -136,7 +136,7 @@ export default function FinalPage() {
             `}
             onClick={() => setViewMode(prev => prev === 'deleted' ? 'all' : 'deleted')}
           >
-            <IconTrash className={`w-5 h-5`} />
+            <TrashIcon className={`w-5 h-5`} />
             <span className="ml-2 font-medium">삭제된 네일</span>
           </Button>
         </div>
