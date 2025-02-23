@@ -6,22 +6,47 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { toast } from "sonner"
 
 export default function LoginPage() {
     const router = useRouter()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // TODO: 실제 로그인 로직 구현
-        console.log("Login attempt:", { email, password })
-        router.push("/")
+        setIsLoading(true)
+
+        try {
+            const response = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            })
+
+            const data = await response.json()
+
+            if (data.success) {
+                localStorage.setItem("token", data.token)
+                toast.success("로그인 성공!")
+                router.push("/")
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error("로그인 중 오류가 발생했습니다.")
+            console.error("Login error:", error)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
-        <div className="max-w-6xl mx-auto min-h-screen flex justify-center">
-            <div className="w-[400px] h-[400px] rounded-xl border bg-white shadow p-6 mt-[120px]">
+        <div className="max-w-6xl mx-auto min-h-screen flex flex-col items-center">
+            <div className="w-[400px] h-[400px] rounded-xl border bg-white shadow p-6 mt-32">
                 <div className="flex flex-col items-center space-y-4 mb-6">
                     <Image
                         src="/images/logo_black.png"
@@ -45,6 +70,7 @@ export default function LoginPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
+                            disabled={isLoading}
                         />
                     </div>
                     <div className="space-y-2">
@@ -55,13 +81,15 @@ export default function LoginPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            disabled={isLoading}
                         />
                     </div>
                     <Button
                         type="submit"
                         className="w-full bg-[#CD19FF] hover:bg-[#CD19FF]/90"
+                        disabled={isLoading}
                     >
-                        로그인
+                        {isLoading ? "로그인 중..." : "로그인"}
                     </Button>
                 </form>
             </div>
