@@ -1,13 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { NailBox } from "@/components/nail/NailBox"
-import { NailShapeChips } from "@/components/filters/NailShapeChips"
-import { NailColorChips } from "@/components/filters/NailColorChips"
-import { NailPatternChips } from "@/components/filters/NailPatternChips"
 import { NailTipGrid } from "@/components/nail/NailTipGrid"
-import { FolderSaveControls } from "@/components/folder/FolderSaveControls"
 import { NailFilterSection } from "@/components/filters/NailFilterSection"
+import { FolderSelect } from "@/components/folder/FolderSelect"
+import { SaveButton } from "@/components/folder/SaveButton"
 
 interface MockImage {
   id: number
@@ -18,7 +17,37 @@ interface MockImage {
   shape?: string
 }
 
+const mockNailSets = [
+  {
+    id: 1,
+    uploader: "김네일",
+    createdAt: new Date().toISOString().split('T')[0],
+    tips: [
+      { id: 1, position: "엄지", image: "/mocks/nail.png" },
+      { id: 2, position: "검지", image: "/mocks/nail.png" },
+      { id: 3, position: "중지", image: "/mocks/nail.png" },
+      { id: 4, position: "약지", image: "/mocks/nail.png" },
+      { id: 5, position: "소지", image: "/mocks/nail.png" },
+    ]
+  },
+  {
+    id: 2,
+    uploader: "이네일",
+    createdAt: new Date().toISOString().split('T')[0],
+    tips: [
+      { id: 6, position: "엄지", image: "/mocks/nail.png" },
+      { id: 7, position: "검지", image: "/mocks/nail.png" },
+      { id: 8, position: "중지", image: "/mocks/nail.png" },
+      { id: 9, position: "약지", image: "/mocks/nail.png" },
+      { id: 10, position: "소지", image: "/mocks/nail.png" },
+    ]
+  },
+]
+
 export default function CombinationPage() {
+  const searchParams = useSearchParams()
+  const setId = searchParams.get('setId')
+  const folderId = searchParams.get('folderId')
   const [selectedFolders, setSelectedFolders] = useState<string[]>([])
   const [selectedShape, setSelectedShape] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
@@ -34,6 +63,29 @@ export default function CombinationPage() {
   )
   const [selectedNailImages, setSelectedNailImages] = useState<Record<string, number>>({})
   const [activeNail, setActiveNail] = useState<string | null>(null)
+
+  // folderId가 있으면 자동으로 해당 폴더 선택
+  useEffect(() => {
+    if (folderId) {
+      setSelectedFolders([folderId])
+    }
+  }, [folderId])
+
+  useEffect(() => {
+    if (setId) {
+      // API 호출
+      const nailSet = mockNailSets.find(set => set.id === parseInt(setId))
+      if (nailSet) {
+        setSelectedNailImages({
+          "엄지": nailSet.tips[0].id,
+          "검지": nailSet.tips[1].id,
+          "중지": nailSet.tips[2].id,
+          "약지": nailSet.tips[3].id,
+          "소지": nailSet.tips[4].id,
+        })
+      }
+    }
+  }, [searchParams])
 
   // 폴더 목록 
   const folders = [
@@ -76,12 +128,21 @@ export default function CombinationPage() {
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
-      <FolderSaveControls
-        selectedFolders={selectedFolders}
-        folders={folders}
-        onFolderToggle={handleFolderToggle}
-        onSave={handleSave}
-      />
+      <div className="flex justify-end mb-4">
+        <div className="flex gap-2">
+          {!setId && !folderId && (
+            <FolderSelect
+              selectedFolders={selectedFolders}
+              folders={folders}
+              onFolderToggle={handleFolderToggle}
+            />
+          )}
+          <SaveButton
+            disabled={!setId && !folderId && selectedFolders.length === 0}
+            onSave={handleSave}
+          />
+        </div>
+      </div>
 
       <div className="flex justify-center mb-4">
         <div className="flex gap-5">
@@ -93,10 +154,10 @@ export default function CombinationPage() {
               selectedImage={selectedNailImages[nail] ? `/mocks/tip.png` : undefined}
               onImageDelete={() => {
                 setSelectedNailImages(prev => {
-                  const newImages = { ...prev };
-                  delete newImages[nail];
-                  return newImages;
-                });
+                  const newImages = { ...prev }
+                  delete newImages[nail]
+                  return newImages
+                })
               }}
             />
           ))}
