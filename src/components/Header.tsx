@@ -13,7 +13,7 @@ export function Header() {
         {/* 로고 */}
         <Link href="/" className="p-[12px] flex items-center space-x-2">
           <Image
-            src="/images/logo.png"
+            src="/images/logo_white.png"
             alt="네일리안 로고"
             width={110}
             height={36}
