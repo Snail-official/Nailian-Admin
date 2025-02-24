@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { cookies } from 'next/headers'
 import pool from '@/lib/db'
 import redis from '@/lib/redis'
 import { RowDataPacket } from 'mysql2'
@@ -57,16 +58,40 @@ export async function POST(request: Request) {
                 const redisKey = `access_token:${admin.id}`;
                 await redis.set(redisKey, accessToken, 'EX', 3600); // 1시간 유효
 
-                // 로그인 성공
-                return NextResponse.json(
+                // 응답 생성
+                const response = NextResponse.json(
                     {
                         success: true,
                         message: "로그인 성공",
-                        accessToken,
-                        refreshToken,
+                        user: {
+                            id: admin.id,
+                            email: admin.email,
+                            username: admin.username
+                        }
                     },
                     { status: 200 }
-                )
+                );
+
+                // 쿠키 설정
+                const cookieStore = await cookies();
+                
+                // Access Token 쿠키 설정
+                cookieStore.set('accessToken', accessToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'strict',
+                    maxAge: 60 * 60 // 1시간
+                });
+
+                // Refresh Token 쿠키 설정
+                cookieStore.set('refreshToken', refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'strict',
+                    maxAge: 7 * 24 * 60 * 60 // 7일
+                });
+
+                return response;
             }
         }
 

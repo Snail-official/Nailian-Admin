@@ -30,7 +30,6 @@ export default function LoginPage() {
             const data = await response.json()
 
             if (data.success) {
-                localStorage.setItem("token", data.token)
                 toast.success("로그인 성공!")
                 router.push("/")
             } else {
@@ -38,7 +37,6 @@ export default function LoginPage() {
             }
         } catch (error) {
             toast.error("로그인 중 오류가 발생했습니다.")
-            console.error("Login error:", error)
         } finally {
             setIsLoading(false)
         }
@@ -64,8 +62,8 @@ export default function LoginPage() {
                     <div className="space-y-2">
                         <Label htmlFor="email">이메일</Label>
                         <Input
-                            id="email"
-                            type="email"
+                            id="text"
+                            type="text"
                             placeholder="name@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
