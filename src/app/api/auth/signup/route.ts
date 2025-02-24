@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server"
-import pool from '@/lib/db'
+import pool from '@/lib/server/db'
 import bcrypt from 'bcryptjs'
+import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
+import { ApiResponseCode } from "@/types/api"
 
 export async function POST(request: Request) {
     try {
@@ -14,12 +15,9 @@ export async function POST(request: Request) {
         )
 
         if (Array.isArray(existingUsers) && existingUsers.length > 0) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "이미 사용 중인 이메일입니다.",
-                },
-                { status: 400 }
+            return createErrorResponse(
+                ApiResponseCode.BAD_REQUEST,
+                "이미 사용 중인 이메일입니다."
             )
         }
 
@@ -49,12 +47,9 @@ export async function POST(request: Request) {
             await connection.commit();
             connection.release();
 
-            return NextResponse.json(
-                {
-                    success: true,
-                    message: "회원가입이 완료되었습니다.",
-                },
-                { status: 201 }
+            return createSuccessResponse(
+                ApiResponseCode.CREATED,
+                "회원가입이 완료되었습니다."
             )
 
         } catch (error) {
@@ -65,13 +60,11 @@ export async function POST(request: Request) {
         }
 
     } catch (error) {
-        console.error('Signup error:', error)
-        return NextResponse.json(
-            {
-                success: false,
-                message: "서버 오류가 발생했습니다.",
-            },
-            { status: 500 }
-        )
+        console.error('Signup error:', error);
+        return createErrorResponse(
+            ApiResponseCode.INTERNAL_ERROR,
+            "서버 오류가 발생했습니다.",
+            error instanceof Error ? error.message : undefined
+        );
     }
 } 
