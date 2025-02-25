@@ -7,39 +7,28 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
+import { useMutation } from '@tanstack/react-query'
+import { authApi } from "@/lib/api"
 
 export default function LoginPage() {
     const router = useRouter()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
+
+    const loginMutation = useMutation({
+        mutationFn: authApi.login,
+        onSuccess: () => {
+            toast.success("로그인 성공!")
+            router.push("/")
+        },
+        onError: (error: any) => {
+            toast.error(error.message || "로그인 중 오류가 발생했습니다.")
+        }
+    })
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setIsLoading(true)
-
-        try {
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            })
-
-            const data = await response.json()
-
-            if (data.success) {
-                toast.success("로그인 성공!")
-                router.push("/")
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            toast.error("로그인 중 오류가 발생했습니다.")
-        } finally {
-            setIsLoading(false)
-        }
+        loginMutation.mutate({ email, password })
     }
 
     return (
@@ -68,7 +57,7 @@ export default function LoginPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            disabled={isLoading}
+                            disabled={loginMutation.isPending}
                         />
                     </div>
                     <div className="space-y-2">
@@ -79,15 +68,15 @@ export default function LoginPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            disabled={isLoading}
+                            disabled={loginMutation.isPending}
                         />
                     </div>
                     <Button
                         type="submit"
                         className="w-full bg-[#CD19FF] hover:bg-[#CD19FF]/90"
-                        disabled={isLoading}
+                        disabled={loginMutation.isPending}
                     >
-                        {isLoading ? "로그인 중..." : "로그인"}
+                        {loginMutation.isPending ? "로그인 중..." : "로그인"}
                     </Button>
                 </form>
             </div>

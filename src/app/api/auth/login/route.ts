@@ -1,10 +1,13 @@
-import { NextResponse } from "next/server"
 import { cookies } from 'next/headers'
-import pool from '@/lib/db'
-import redis from '@/lib/redis'
+import pool from '@/lib/server/db'
+import redis from '@/lib/server/redis'
 import { RowDataPacket } from 'mysql2'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
+import { ApiResponseCode } from "@/types/api"
+import { NextResponse } from 'next/server'
+import { LoginRequest, LoginResponse, isValidLoginBody } from '@/types/api/auth'
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'access-token-secret'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh-token-secret'
@@ -12,9 +15,17 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh-token-
 const ACCESS_TOKEN_EXPIRY = '1h'  // 1시간
 const REFRESH_TOKEN_EXPIRY = '7d' // 7일
 
-export async function POST(request: Request) {
+export async function POST(req: LoginRequest) {
     try {
-        const body = await request.json()
+        const body = await req.json()
+        
+        if (!isValidLoginBody(body)) {
+            return createErrorResponse(
+                ApiResponseCode.BAD_REQUEST,
+                '잘못된 요청 형식입니다.'
+            )
+        }
+
         const { email, password } = body
 
         // 데이터베이스에서 admin 확인
@@ -58,18 +69,9 @@ export async function POST(request: Request) {
                 const redisKey = `access_token:${admin.id}`;
                 await redis.set(redisKey, accessToken, 'EX', 3600); // 1시간 유효
 
-                // 응답 생성
-                const response = NextResponse.json(
-                    {
-                        success: true,
-                        message: "로그인 성공",
-                        user: {
-                            id: admin.id,
-                            email: admin.email,
-                            username: admin.username
-                        }
-                    },
-                    { status: 200 }
+                const response = createSuccessResponse<LoginResponse['data']>(
+                    ApiResponseCode.SUCCESS,
+                    "로그인 성공"
                 );
 
                 // 쿠키 설정
@@ -95,22 +97,17 @@ export async function POST(request: Request) {
             }
         }
 
-        // 로그인 실패
-        return NextResponse.json(
-            {
-                success: false,
-                message: "이메일 또는 비밀번호가 올바르지 않습니다.",
-            },
-            { status: 401 }
-        )
+        return createErrorResponse(
+            ApiResponseCode.UNAUTHORIZED,
+            "이메일 또는 비밀번호가 올바르지 않습니다."
+        );
+
     } catch (error) {
         console.error('Login error:', error);
-        return NextResponse.json(
-            {
-                success: false,
-                message: "서버 오류가 발생했습니다.",
-            },
-            { status: 500 }
-        )
+        return createErrorResponse(
+            ApiResponseCode.INTERNAL_ERROR,
+            "서버 오류가 발생했습니다.",
+            error instanceof Error ? error.message : undefined
+        );
     }
 } 
