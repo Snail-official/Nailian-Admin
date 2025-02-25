@@ -1,5 +1,5 @@
-import axios, { AxiosError } from 'axios'
-import { ApiResponseCode } from '@/types/api'
+import axios, { AxiosError, AxiosResponse } from 'axios'
+import { ApiSuccessResponse, ApiResponseCode, ApiErrorResponse } from '@/types/api'
 
 // 응답 타입
 export interface ApiResponse<T = any> {
@@ -33,8 +33,20 @@ export const api = axios.create({
 
 // 응답 인터셉터
 api.interceptors.response.use(
-    (response) => response.data,
-    (error: AxiosError<ApiResponse>) => {
+    (response: AxiosResponse<ApiSuccessResponse<unknown>>) => {
+        const { data } = response
+        if (data.code !== ApiResponseCode.SUCCESS && data.code !== ApiResponseCode.CREATED) {
+            throw new ApiError(
+                ApiResponseCode.INTERNAL_ERROR,
+                'Invalid response code'
+            )
+        }
+        return {
+            ...response,
+            data: data.data
+        }
+    },
+    (error: AxiosError<ApiErrorResponse>) => {
         if (error.response) {
             const { code, message, error: responseError } = error.response.data
             throw new ApiError(code, message, responseError?.details)
