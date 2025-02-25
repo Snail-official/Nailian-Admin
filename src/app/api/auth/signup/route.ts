@@ -1,12 +1,20 @@
+import { NextResponse } from 'next/server'
 import pool from '@/lib/server/db'
 import bcrypt from 'bcryptjs'
 import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
 import { ApiResponseCode } from "@/types/api"
+import { SignupRequest, SignupResponse, isValidSignupRequest } from '@/types/api/auth'
 
-export async function POST(request: Request) {
+export async function POST(req: SignupRequest) {
     try {
-        const body = await request.json()
-        const { email, password, username } = body
+        if (!await isValidSignupRequest(req)) {
+            return createErrorResponse(
+                ApiResponseCode.BAD_REQUEST,
+                '잘못된 요청 형식입니다.'
+            )
+        }
+
+        const { email, password, username } = await req.json()
 
         // 이메일 중복 체크
         const [existingUsers] = await pool.execute(
@@ -47,9 +55,16 @@ export async function POST(request: Request) {
             await connection.commit();
             connection.release();
 
-            return createSuccessResponse(
+            const user = {
+                id: userId,
+                email,
+                username
+            }
+
+            return createSuccessResponse<SignupResponse['data']>(
                 ApiResponseCode.CREATED,
-                "회원가입이 완료되었습니다."
+                "회원가입이 완료되었습니다.",
+                { user }
             )
 
         } catch (error) {

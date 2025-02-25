@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
 import { ApiResponseCode } from "@/types/api"
+import { NextResponse } from 'next/server'
+import { LoginRequest, LoginResponse, isValidLoginBody } from '@/types/api/auth'
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'access-token-secret'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh-token-secret'
@@ -13,9 +15,17 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh-token-
 const ACCESS_TOKEN_EXPIRY = '1h'  // 1시간
 const REFRESH_TOKEN_EXPIRY = '7d' // 7일
 
-export async function POST(request: Request) {
+export async function POST(req: LoginRequest) {
     try {
-        const body = await request.json()
+        const body = await req.json()
+        
+        if (!isValidLoginBody(body)) {
+            return createErrorResponse(
+                ApiResponseCode.BAD_REQUEST,
+                '잘못된 요청 형식입니다.'
+            )
+        }
+
         const { email, password } = body
 
         // 데이터베이스에서 admin 확인
@@ -59,14 +69,9 @@ export async function POST(request: Request) {
                 const redisKey = `access_token:${admin.id}`;
                 await redis.set(redisKey, accessToken, 'EX', 3600); // 1시간 유효
 
-                const response = createSuccessResponse(
+                const response = createSuccessResponse<LoginResponse['data']>(
                     ApiResponseCode.SUCCESS,
-                    "로그인 성공",
-                    {
-                        id: admin.id,
-                        email: admin.email,
-                        username: admin.username
-                    }
+                    "로그인 성공"
                 );
 
                 // 쿠키 설정

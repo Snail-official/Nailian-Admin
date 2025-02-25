@@ -5,15 +5,24 @@ import { RowDataPacket } from 'mysql2'
 import { cookies } from 'next/headers'
 import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
 import { ApiResponseCode } from "@/types/api"
+import { NextRequest } from 'next/server'
+import { RefreshResponse, isValidRefreshRequest } from '@/types/api/auth'
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'access-token-secret'
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh-token-secret'
 const ACCESS_TOKEN_EXPIRY = '1h'
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
     try {
+        if (!isValidRefreshRequest(req)) {
+            return createErrorResponse(
+                ApiResponseCode.BAD_REQUEST,
+                '잘못된 요청 형식입니다.'
+            )
+        }
+
         const cookieStore = await cookies()
-        const refreshToken = cookieStore.get('refreshToken')?.value
+        const refreshToken = req.cookies.get('refreshToken')?.value
 
         if (!refreshToken) {
             return createErrorResponse(
@@ -69,9 +78,10 @@ export async function POST(request: Request) {
             const redisKey = `access_token:${user.id}`
             await redis.set(redisKey, newAccessToken, 'EX', 3600)
 
-            const response = createSuccessResponse(
+            const response = createSuccessResponse<RefreshResponse['data']>(
                 ApiResponseCode.SUCCESS,
-                "Access Token이 갱신되었습니다."
+                '토큰이 갱신되었습니다.',
+                { accessToken: newAccessToken }
             );
 
             // 새로운 Access Token을 쿠키에 설정
