@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server'
 
 // 공통 타입
 export interface Folder {
-  id: string
+  id: number
   name: string
 }
 

@@ -2,11 +2,7 @@
 
 import ChevronRightIcon from "@/assets/icons/ChevronRightIcon.svg"
 import { useRouter } from "next/navigation"
-
-interface Folder {
-  id: string
-  name: string
-}
+import type { Folder } from "@/types/api/folder"
 
 interface FolderListProps {
   folders: Folder[]
@@ -16,8 +12,8 @@ interface FolderListProps {
 export function FolderList({ folders, onFolderClick }: FolderListProps) {
   const router = useRouter()
 
-  const handleFolderClick = (folderId: string) => {
-    router.push(`/folder/${folderId}`)
+  const handleFolderClick = (id: number, name: string) => {
+    router.push(`/folder/${id}?name=${name}`)
     onFolderClick?.()
   }
 
@@ -27,12 +23,12 @@ export function FolderList({ folders, onFolderClick }: FolderListProps) {
         <div
           key={folder.id}
           className="cursor-pointer"
-          onClick={() => handleFolderClick(folder.id)}
+          onClick={() => handleFolderClick(folder.id, folder.name)}
         >
           <div className="flex items-center justify-between px-[32px] pr-[36px] hover:bg-gray-100 transition-colors">
             <span className="py-2">{folder.name}</span>
             <ChevronRightIcon className="w-4 h-4 flex-shrink-0" />
-            </div>
+          </div>
         </div>
       ))}
     </div>

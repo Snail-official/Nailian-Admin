@@ -5,31 +5,46 @@ import { Separator } from "@/components/ui/separator"
 import { FolderHeader } from "./FolderHeader"
 import { FolderList } from "./FolderList"
 import { FolderCreateDialog } from "./FolderCreateDialog"
-
-interface Folder {
-  id: string
-  name: string
-}
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { folderApi } from "@/lib/api/folder"
+import { toast } from "sonner"
+import type { Folder } from "@/types/api/folder"
 
 interface FolderSectionProps {
   onFolderClick?: () => void
 }
 
 export function FolderSection({ onFolderClick }: FolderSectionProps) {
-  const [folders, setFolders] = useState<Folder[]>([])
+  const queryClient = useQueryClient()
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 
-  const handleCreateFolder = (name: string) => {
-    const newFolder: Folder = {
-      id: crypto.randomUUID(),
-      name: name
+  const { data: folders = [] } = useQuery<Folder[]>({
+    queryKey: ['folders'],
+    queryFn: folderApi.getFolders
+  })
+
+  const createMutation = useMutation({
+    mutationFn: folderApi.createFolder,
+    onSuccess: () => {
+      setIsCreateDialogOpen(false)
+      queryClient.invalidateQueries({ queryKey: ['folders'] })
+      toast.success('폴더가 생성되었습니다.')
+    },
+    onError: (error: any) => {
+      toast.error(error.message || '폴더 생성 중 오류가 발생했습니다.')
     }
-    setFolders(prev => [...prev, newFolder])
+  })
+
+  const handleCreateFolder = (name: string) => {
+    createMutation.mutate(name)
   }
 
   return (
     <div>
-      <FolderHeader onCreateClick={() => setIsCreateDialogOpen(true)} />
+      <FolderHeader 
+        onCreateClick={() => setIsCreateDialogOpen(true)}
+        disabled={createMutation.isPending}
+      />
       <Separator className="my-4 bg-gray-700" />
       <FolderList 
         folders={folders} 
@@ -40,6 +55,7 @@ export function FolderSection({ onFolderClick }: FolderSectionProps) {
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         onCreateFolder={handleCreateFolder}
+        isCreating={createMutation.isPending}
       />
     </div>
   )

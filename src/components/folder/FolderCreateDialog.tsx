@@ -9,16 +9,21 @@ interface FolderCreateDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onCreateFolder: (name: string) => void
+  isCreating?: boolean
 }
 
-export function FolderCreateDialog({ open, onOpenChange, onCreateFolder }: FolderCreateDialogProps) {
+export function FolderCreateDialog({ 
+  open, 
+  onOpenChange, 
+  onCreateFolder,
+  isCreating = false 
+}: FolderCreateDialogProps) {
   const [newFolderName, setNewFolderName] = useState("")
 
   const handleCreateFolder = () => {
     if (newFolderName.trim()) {
       onCreateFolder(newFolderName.trim())
       setNewFolderName("")
-      onOpenChange(false)
     }
   }
 
@@ -34,10 +39,14 @@ export function FolderCreateDialog({ open, onOpenChange, onCreateFolder }: Folde
             placeholder="폴더 이름" 
             value={newFolderName}
             onChange={(e) => setNewFolderName(e.target.value)}
+            disabled={isCreating}
           />
           <div className="flex justify-center">
-            <Button onClick={handleCreateFolder}>
-              폴더 생성
+            <Button 
+              onClick={handleCreateFolder}
+              disabled={isCreating || !newFolderName.trim()}
+            >
+              {isCreating ? "생성 중..." : "폴더 생성"}
             </Button>
           </div>
         </div>
