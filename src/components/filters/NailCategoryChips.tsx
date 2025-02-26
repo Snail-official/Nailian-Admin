@@ -3,7 +3,7 @@ import { Button } from "../ui/button"
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   "GRADIENT": "그라데이션",
-  "ONE COLOR": "원컬러",
+  "ONE_COLOR": "원컬러",
   "FRENCH": "프렌치",
   "ART": "아트"
 }
