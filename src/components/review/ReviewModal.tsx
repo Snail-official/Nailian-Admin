@@ -7,19 +7,21 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react"
 import { useState } from "react"
 import { DialogTitle } from "@radix-ui/react-dialog"
 import { NailColorChips } from "@/components/filters/NailColorChips"
-import { NailPatternChips } from "@/components/filters/NailPatternChips"
+
 import { TrashIcon } from "lucide-react"
+import { Category, Color } from "@/types/nail"
+import { NailCategoryChips } from "../filters/NailCategoryChips"
 
 interface ReviewModalProps {
     isOpen: boolean
     onOpenChange: (open: boolean) => void
     images: { id: number; src: string }[]
-    onComplete?: (reviewedData: { id: number; color: string | null; pattern: string | null; isDeleted: boolean }[]) => void
+    onComplete?: (reviewedData: { id: number; color: Color | null; category: Category | null; isDeleted: boolean }[]) => void
 }
 
 interface ReviewData {
-    color: string | null
-    pattern: string | null
+    color: Color | null
+    category: Category | null
     isDeleted: boolean
 }
 
@@ -45,7 +47,7 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete }: Review
             ...prev,
             [currentImage.id]: {
                 color: null,
-                pattern: null,
+                category: null,
                 isDeleted: !prev[currentImage.id]?.isDeleted
             }
         }))
@@ -53,12 +55,12 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete }: Review
 
     const isCurrentImageReviewed = (imageId: number) => {
         const data = reviewData[imageId]
-        return data?.isDeleted || (data?.color && data?.pattern)
+        return data?.isDeleted || (data?.color && data?.category)
     }
 
     const isAllReviewed = images.length > 0 && images.every(img => isCurrentImageReviewed(img.id))
 
-    const handleColorSelect = (color: string | null) => {
+    const handleColorSelect = (color: Color | null) => {
         const currentImage = images[currentIndex]
         setReviewData(prev => ({
             ...prev,
@@ -69,13 +71,13 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete }: Review
         }))
     }
 
-    const handlePatternSelect = (pattern: string | null) => {
+    const handleCategorySelect = (category: Category | null) => {
         const currentImage = images[currentIndex]
         setReviewData(prev => ({
             ...prev,
             [currentImage.id]: {
                 ...prev[currentImage.id],
-                pattern
+                category
             }
         }))
     }
@@ -86,7 +88,7 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete }: Review
         const reviewedData = images.map(img => ({
             id: img.id,
             color: reviewData[img.id]?.color ?? null,
-            pattern: reviewData[img.id]?.pattern ?? null,
+            category: reviewData[img.id]?.category ?? null,
             isDeleted: reviewData[img.id]?.isDeleted ?? false
         }))
         onComplete?.(reviewedData)
@@ -133,17 +135,17 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete }: Review
                                 <span className="text-sm font-medium min-w-[48px]">색상</span>
                                 <div className={currentImageData?.isDeleted ? 'opacity-50 pointer-events-none' : ''}>
                                     <NailColorChips
-                                        selectedValue={currentImageData?.color ?? null}
-                                        onSelect={handleColorSelect}
+                                        selectedColor={currentImageData?.color ?? null}
+                                        onColorSelect={handleColorSelect}
                                     />
                                 </div>
                             </div>
                             <div className="flex items-center gap-4">
                                 <span className="text-sm font-medium min-w-[48px]">패턴</span>
                                 <div className={currentImageData?.isDeleted ? 'opacity-50 pointer-events-none' : ''}>
-                                    <NailPatternChips
-                                        selectedValue={currentImageData?.pattern ?? null}
-                                        onSelect={handlePatternSelect}
+                                    <NailCategoryChips
+                                        selectedCategory={currentImageData?.category ?? null}
+                                        onCategorySelect={handleCategorySelect}
                                     />
                                 </div>
                             </div>
