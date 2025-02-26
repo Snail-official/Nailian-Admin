@@ -7,14 +7,16 @@ import { SignupRequest, SignupResponse, isValidSignupRequest } from '@/types/api
 
 export async function POST(req: SignupRequest) {
     try {
-        if (!await isValidSignupRequest(req)) {
+        const body = await req.json()
+        
+        if (!isValidSignupRequest(body)) {
             return createErrorResponse(
                 ApiResponseCode.BAD_REQUEST,
                 '잘못된 요청 형식입니다.'
             )
         }
 
-        const { email, password, username } = await req.json()
+        const { email, password, username } = body
 
         // 이메일 중복 체크
         const [existingUsers] = await pool.execute(

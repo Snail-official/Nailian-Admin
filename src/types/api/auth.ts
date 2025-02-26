@@ -40,19 +40,14 @@ export interface SignupRequest extends NextRequest {
   json(): Promise<SignupCredentials>
 }
 
-export async function isValidSignupRequest(req: NextRequest): Promise<boolean> {
-  try {
-    const body = await req.json()
-    return (
-      typeof body === 'object' &&
-      body !== null &&
-      typeof body.email === 'string' &&
-      typeof body.password === 'string' &&
-      typeof body.username === 'string'
-    )
-  } catch {
-    return false
-  }
+export function isValidSignupRequest(body: unknown): boolean {
+  return (
+    typeof body === 'object' &&
+    body !== null &&
+    typeof (body as SignupCredentials).email === 'string' &&
+    typeof (body as SignupCredentials).password === 'string' &&
+    typeof (body as SignupCredentials).username === 'string'
+  )
 }
 
 export type SignupResponse = ApiSuccessResponse<{
