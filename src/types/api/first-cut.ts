@@ -33,41 +33,26 @@ export interface UploadFirstCutRequest extends NextRequest {
     }>
 }
 
-export async function isValidUploadFirstCutRequest(req: NextRequest): Promise<boolean> {
-    try {
-        const formData = await req.formData()
-        const files = formData.getAll('files')
-        const shape = formData.get('shape') as string | null
+export function isValidUploadFirstCutRequest(formData: FormData): boolean {
+    const files = formData.getAll('files')
+    const shape = formData.get('shape') as string | null
 
-        return (
-            files.length > 0 &&
-            files.every(file => file instanceof File) &&
-            (shape === null || SHAPES.includes(shape as Shape))
-        )
-    } catch {
-        return false
-    }
+    return (
+        files.length > 0 &&
+        files.every(file => file instanceof File) &&
+        (!!shape && Object.values(SHAPES).includes(shape as Shape))
+    )
 }
 
 export type UploadFirstCutResponse = ApiSuccessResponse
 
 // DELETE /api/first-cut
-export interface DeleteFirstCutBody {
+export interface DeleteFirstCutRequestBody {
     ids: number[]
 }
 
-export interface DeleteFirstCutRequest extends NextRequest {
-    json(): Promise<DeleteFirstCutBody>
-}
-
-
-export async function isValidDeleteFirstCutRequest(req: NextRequest): Promise<boolean> {
-    try {
-        const body = await req.json()
-        return Array.isArray(body.ids) && body.ids.every((id: unknown) => typeof id === 'number')
-    } catch {
-        return false
-    }
+export function isValidDeleteFirstCutRequest(body: DeleteFirstCutRequestBody): boolean {
+    return Array.isArray(body.ids) && body.ids.length > 0 && body.ids.every(id => typeof id === 'number')
 }
 
 export type DeleteFirstCutResponse = ApiSuccessResponse 

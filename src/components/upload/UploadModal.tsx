@@ -7,15 +7,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog" 
 import { NailShapeChips } from '../filters/NailShapeChips'
+import { Shape, SHAPES } from '@/types/nail'
+import { toast } from "sonner"
 
 interface UploadModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  onUploadComplete: (files: File[], shape: string | null) => void
+  onUploadComplete: (files: File[], shape: Shape) => void
 }
 
 export function UploadModal({ isOpen, onOpenChange, onUploadComplete }: UploadModalProps) {
-  const [selectedShape, setSelectedShape] = useState<string | null>(null)
+  const [selectedShape, setSelectedShape] = useState<Shape | null>(null)
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -41,6 +43,16 @@ export function UploadModal({ isOpen, onOpenChange, onUploadComplete }: UploadMo
   }
 
   const handleUploadComplete = () => {
+    if (!selectedShape) {
+      toast.error("네일 모양을 선택해주세요.")
+      return
+    }
+
+    if (uploadedFiles.length === 0) {
+      toast.error("업로드할 파일을 선택해주세요.")
+      return
+    }
+
     onUploadComplete(uploadedFiles, selectedShape)
     onOpenChange(false)
     setUploadedFiles([])
@@ -132,10 +144,7 @@ export function UploadModal({ isOpen, onOpenChange, onUploadComplete }: UploadMo
                 {uploadedFiles.map((file, index) => (
                   <p 
                     key={index} 
-                    style={{
-                      fontSize: '0.875rem',
-                      color: '#4B5563'
-                    }}
+                    className="text-sm text-gray-600 truncate max-w-[400px]"
                   >
                     {file.name}
                   </p>
@@ -147,7 +156,7 @@ export function UploadModal({ isOpen, onOpenChange, onUploadComplete }: UploadMo
           <Button 
             className="w-full bg-[#CD19FF] hover:bg-[#CD19FF]/90 text-white"
             onClick={handleUploadComplete}
-            disabled={uploadedFiles.length === 0}
+            disabled={uploadedFiles.length === 0 || !selectedShape}
           >
             {uploadedFiles.length}개 파일 업로드
           </Button>

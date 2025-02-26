@@ -1,16 +1,23 @@
+import { Shape, SHAPES } from "@/types/nail"
 import { Button } from "../ui/button"
 
-const tipShapes = ["아몬드", "라운드", "스틸레토", "스퀘어", "발레리나"]
+export const SHAPE_LABELS: Record<Shape, string> = {
+  "ALMOND": "아몬드",
+  "ROUND": "라운드",
+  "STILETTO": "스틸레토",
+  "SQUARE": "스퀘어",
+  "BALLERINA": "발레리나"
+}
 
 interface NailShapeChipsProps {
-  selectedShape: string | null
-  onShapeSelect: (shape: string | null) => void
+  selectedShape: Shape | null
+  onShapeSelect: (shape: Shape | null) => void
 }
 
 export function NailShapeChips({ selectedShape, onShapeSelect }: NailShapeChipsProps) {
   return (
     <div className="flex gap-2 flex-wrap">
-      {tipShapes.map((shape) => (
+      {SHAPES.map((shape) => (
         <Button
           key={shape}
           variant="outline"
@@ -21,7 +28,7 @@ export function NailShapeChips({ selectedShape, onShapeSelect }: NailShapeChipsP
           }`}
           onClick={() => onShapeSelect(shape === selectedShape ? null : shape)}
         >
-          {shape}
+          {SHAPE_LABELS[shape]}
         </Button>
       ))}
     </div>
