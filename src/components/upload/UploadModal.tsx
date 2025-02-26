@@ -132,10 +132,7 @@ export function UploadModal({ isOpen, onOpenChange, onUploadComplete }: UploadMo
                 {uploadedFiles.map((file, index) => (
                   <p 
                     key={index} 
-                    style={{
-                      fontSize: '0.875rem',
-                      color: '#4B5563'
-                    }}
+                    className="text-sm text-gray-600 truncate max-w-[400px]"
                   >
                     {file.name}
                   </p>
