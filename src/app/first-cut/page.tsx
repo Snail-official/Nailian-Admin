@@ -9,65 +9,62 @@ import { UploadModal } from "@/components/upload/UploadModal"
 import { DeleteDialog } from "@/components/delete/DeleteDialog"
 import { DeleteButton } from "@/components/delete/DeleteButton"
 import { NailShapeChips } from "@/components/filters/NailShapeChips"
-
-interface MockImage {
-  id: number
-  src: string
-  alt: string
-  uploadedBy: string
-  date: string
-  shape?: string
-}
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from "sonner"
+import { firstCutApi } from "@/lib/api/first-cut"
+import { Shape, SHAPES } from "@/types/nail"
 
 export default function FirstCutPage() {
-  const [mockImages, setMockImages] = useState<MockImage[]>(
-    Array.from({ length: 9 }, (_, i) => ({
-      id: i + 1,
-      src: "/mocks/tip.png",
-      alt: `네일 이미지 ${i + 1}`,
-      uploadedBy: "김민지",
-      date: "2024-01-15",
-    }))
-  )
-  const [selectedShape, setSelectedShape] = useState<string | null>(null)
+  const queryClient = useQueryClient()
+  const [selectedShape, setSelectedShape] = useState<Shape | null>(null)
   const [selectedImages, setSelectedImages] = useState<number[]>([])
   const [isUploadOpen, setIsUploadOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-  const filteredImages = selectedShape
-    ? mockImages.filter(image => image.shape === selectedShape)
-    : mockImages
+  const { data: images = [], isLoading } = useQuery({
+    queryKey: ['firstCut', selectedShape],
+    queryFn: () => firstCutApi.getFirstCuts(selectedShape),
+  })
 
-  const toggleImageSelection = (id: number) => {
-    setSelectedImages(prev => 
-      prev.includes(id) 
-        ? prev.filter(imageId => imageId !== id)
-        : [...prev, id]
-    )
-  }
+  const uploadMutation = useMutation({
+    mutationFn: firstCutApi.uploadFirstCuts,
+    onSuccess: () => {
+      setIsUploadOpen(false)
+      toast.success("업로드가 완료되었습니다.")
+      queryClient.invalidateQueries({ queryKey: ['firstCut'] })
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "업로드 중 오류가 발생했습니다.")
+    }
+  })
 
-  const handleUploadComplete = (files: File[], shape: string | null) => {
-    const newImages: MockImage[] = files.map((file, index) => ({
-      id: mockImages.length + index + 1,
-      src: URL.createObjectURL(file),
-      alt: file.name,
-      uploadedBy: "김민지",
-      date: new Date().toISOString().split('T')[0],
-      shape: shape || undefined
-    }))
+  const deleteMutation = useMutation({
+    mutationFn: firstCutApi.deleteFirstCuts,
+    onSuccess: () => {
+      setSelectedImages([])
+      setIsDeleteDialogOpen(false)
+      toast.success("선택한 이미지가 삭제되었습니다.")
+      queryClient.invalidateQueries({ queryKey: ['firstCut'] })
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "삭제 중 오류가 발생했습니다.")
+    }
+  })
 
-    setMockImages(prev => [...prev, ...newImages])
+  const handleUploadComplete = (files: File[], shape: Shape) => {
+    uploadMutation.mutate({ files, shape })
   }
 
   const handleDelete = () => {
-    setMockImages(prev => prev.filter(image => !selectedImages.includes(image.id)))
-    setSelectedImages([])
-    setIsDeleteDialogOpen(false)
+    deleteMutation.mutate(selectedImages)
+  }
+
+  if (isLoading) {
+    return <div>로딩 중...</div>
   }
 
   return (
     <div className="py-6 max-w-6xl mx-auto">
-      {/* 필터 및 버튼 행 */}
       <div className="flex items-center justify-between mb-4 pl-6 pr-[72px]">
         <NailShapeChips
           selectedShape={selectedShape}
@@ -78,9 +75,10 @@ export default function FirstCutPage() {
             variant="outline"
             className="bg-white text-black hover:bg-gray-100"
             onClick={() => setIsUploadOpen(true)}
+            disabled={uploadMutation.isPending}
           >
             <CirclePlusIcon className="w-5 h-5 mr-2" />
-            업로드하기
+            {uploadMutation.isPending ? "업로드 중..." : "업로드하기"}
           </Button>
           <Button className="bg-black text-white hover:bg-gray-900">
             <DownloadIcon className="w-5 h-5 mr-2" />
@@ -89,21 +87,24 @@ export default function FirstCutPage() {
         </div>
       </div>
 
-      {/* 제목 및 삭제 행 */}
       <div className="flex items-center justify-between mb-8 pl-6 pr-[72px]">
         <h1 className="text-2xl font-bold">
-          총 <span className="text-[#CD19FF]">{filteredImages.length}</span>개
+          총 <span className="text-[#CD19FF]">{images.length}</span>개
         </h1>
         <DeleteButton 
           onClick={() => setIsDeleteDialogOpen(true)}
-          disabled={selectedImages.length === 0}
+          disabled={selectedImages.length === 0 || deleteMutation.isPending}
         />
       </div>
 
       <NailTipGrid
-        images={filteredImages}
+        images={images}
         selectedImages={selectedImages}
-        onImageSelect={toggleImageSelection}
+        onImageSelect={(id) => setSelectedImages(prev => 
+          prev.includes(id) 
+            ? prev.filter(imageId => imageId !== id)
+            : [...prev, id]
+        )}
       />
 
       <UploadModal
