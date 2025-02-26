@@ -1,23 +1,24 @@
+import { Category, Color, Shape } from "@/types/nail"
 import { NailColorChips } from "./NailColorChips"
-import { NailPatternChips } from "./NailPatternChips"
 import { NailShapeChips } from "./NailShapeChips"
+import { NailCategoryChips } from "./NailCategoryChips"
 
 interface NailFilterSectionProps {
-  selectedShape: string | null
-  selectedColor: string | null
-  selectedPattern: string | null
-  onShapeSelect: (shape: string | null) => void
-  onColorSelect: (color: string | null) => void
-  onPatternSelect: (pattern: string | null) => void
+  selectedShape: Shape | null
+  selectedColor: Color | null
+  selectedCategory: Category | null
+  onShapeSelect: (shape: Shape | null) => void
+  onColorSelect: (color: Color | null) => void
+  onCategorySelect: (category: Category | null) => void
 }
 
 export function NailFilterSection({
   selectedShape,
   selectedColor,
-  selectedPattern,
+  selectedCategory,
   onShapeSelect,
   onColorSelect,
-  onPatternSelect,
+  onCategorySelect,
 }: NailFilterSectionProps) {
     return (
       <div className="space-y-4 mb-8 pl-6 pr-[72px]">
@@ -31,15 +32,15 @@ export function NailFilterSection({
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-medium">색상</h2>
           <NailColorChips
-            selectedValue={selectedColor}
-            onSelect={onColorSelect}
+            selectedColor={selectedColor}
+            onColorSelect={onColorSelect}
           />
         </div>
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-medium">패턴</h2>
-          <NailPatternChips
-            selectedValue={selectedPattern}
-            onSelect={onPatternSelect}
+          <NailCategoryChips
+            selectedCategory={selectedCategory}
+            onCategorySelect={onCategorySelect}
           />
         </div>
       </div>
