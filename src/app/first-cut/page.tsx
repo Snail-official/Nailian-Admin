@@ -98,7 +98,12 @@ export default function FirstCutPage() {
       </div>
 
       <NailTipGrid
-        images={images}
+        images={images.map(image => ({
+          id: image.id,
+          src: image.src,
+          username: image.uploadedBy,
+          createdAt: image.createdAt
+        }))}
         selectedImages={selectedImages}
         onImageSelect={(id) => setSelectedImages(prev => 
           prev.includes(id) 

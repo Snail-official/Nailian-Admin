@@ -38,17 +38,20 @@ model banner {
 }
 
 model nail_assets {
-  id            Int                    @id @default(autoincrement())
-  shape         nail_assets_shape
-  asset_type    nail_assets_asset_type
-  image_url     String                 @db.Text
-  uploaded_by   Int
-  is_downloaded Boolean?
-  created_at    DateTime               @default(now()) @db.Timestamp(0)
-  deleted_at    DateTime?              @db.Timestamp(0)
-  user          user                   @relation(fields: [uploaded_by], references: [id], onDelete: Cascade, map: "fk_nail_assets_uploaded_by")
+  id                                Int                    @id @default(autoincrement())
+  shape                             nail_assets_shape
+  asset_type                        nail_assets_asset_type
+  image_url                         String                 @db.Text
+  uploaded_by                       Int
+  is_downloaded                     Boolean?
+  created_at                        DateTime               @default(now()) @db.Timestamp(0)
+  deleted_at                        DateTime?              @db.Timestamp(0)
+  deleted_by                        Int?
+  user_nail_assets_deleted_byTouser user?                  @relation("nail_assets_deleted_byTouser", fields: [deleted_by], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_nail_assets_deleted_by")
+  user                              user                   @relation(fields: [uploaded_by], references: [id], onDelete: Cascade, map: "fk_nail_assets_uploaded_by")
 
   @@index([uploaded_by], map: "fk_nail_assets_uploaded_by")
+  @@index([deleted_by], map: "fk_nail_assets_deleted_by")
 }
 
 model nail_folder {
@@ -148,21 +151,22 @@ model social_login {
 }
 
 model user {
-  id                       Int                @id @default(autoincrement())
-  nickname                 String?            @db.VarChar(16)
-  user_type                user_user_type
-  registered_ip            String?            @db.VarChar(15)
-  created_at               DateTime           @default(now()) @db.Timestamp(0)
-  deleted_at               DateTime?          @db.Timestamp(0)
-  onboarding_steps_bitmask Int                @default(0)
-  admin                    admin?
-  admin_scrap              admin_scrap[]
-  nail_assets              nail_assets[]
-  nail_set                 nail_set[]
-  nail_tip                 nail_tip[]
-  refresh_token            refresh_token[]
-  social_login             social_login[]
-  user_preferences         user_preferences[]
+  id                                       Int                @id @default(autoincrement())
+  nickname                                 String?            @db.VarChar(16)
+  user_type                                user_user_type
+  registered_ip                            String?            @db.VarChar(15)
+  created_at                               DateTime           @default(now()) @db.Timestamp(0)
+  deleted_at                               DateTime?          @db.Timestamp(0)
+  onboarding_steps_bitmask                 Int                @default(0)
+  admin                                    admin?
+  admin_scrap                              admin_scrap[]
+  nail_assets_nail_assets_deleted_byTouser nail_assets[]      @relation("nail_assets_deleted_byTouser")
+  nail_assets                              nail_assets[]
+  nail_set                                 nail_set[]
+  nail_tip                                 nail_tip[]
+  refresh_token                            refresh_token[]
+  social_login                             social_login[]
+  user_preferences                         user_preferences[]
 }
 
 model user_preferences {
