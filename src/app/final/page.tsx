@@ -8,6 +8,7 @@ import { NailFilterSection } from "@/components/filters/NailFilterSection"
 import { NailTipGrid } from "@/components/nail/NailTipGrid"
 import { NailDetailModal } from "@/components/nail/NailDetailModal"
 import CirclePlusIcon from "@/assets/icons/CirclePlusIcon.svg"
+import ExclamationCircleIcon from "@/assets/icons/ExclamationCircleIcon.svg"
 import { useRouter } from "next/navigation"
 import { Shape, Color, Category, NailType } from "@/types/nail"
 import { finalApi } from "@/lib/api/final"
@@ -183,7 +184,8 @@ export default function FinalPage() {
               src: image.src,
               username: image.deletedBy || 'Unknown', // AiResultImage의 경우 deletedBy를 username으로
               createdAt: image.createdAt,
-              type: 'AI_GENERATED'
+              type: 'AI_GENERATED',
+              icon: <ExclamationCircleIcon className="w-6 h-6 text-gray-500" />
             };
           }
         })}

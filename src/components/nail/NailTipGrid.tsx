@@ -8,6 +8,7 @@ export interface Image {
   username: string
   createdAt: string
   type?: NailType
+  icon?: React.ReactNode
 }
 
 interface NailTipGridProps {
@@ -31,6 +32,13 @@ export function NailTipGrid({ images, selectedImages, onImageSelect }: NailTipGr
               <CheckIcon className="w-5 h-5" />
             </div>
           )}
+          {
+            image.icon && (
+              <div className="absolute top-1 left-2 z-10">
+                {image.icon}
+              </div>
+            )
+          }
           <div className="relative aspect-square rounded-lg overflow-hidden">
             <Image
               src={image.src}
