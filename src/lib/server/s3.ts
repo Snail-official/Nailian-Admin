@@ -30,7 +30,7 @@ export async function uploadToS3(file: File): Promise<string> {
       })
     )
 
-    return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`
+    return `${process.env.AWS_CLOUDFRONT_DOMAIN}/${key}`
   } catch (error) {
     console.error('S3 Upload Error:', error)
     throw new Error('파일 업로드 중 오류가 발생했습니다.')

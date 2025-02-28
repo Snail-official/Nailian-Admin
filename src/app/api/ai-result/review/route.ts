@@ -70,7 +70,8 @@ export async function POST(req: ReviewAiResultRequest) {
                                 id: asset.id
                             },
                             data: {
-                                deleted_at: new Date()
+                                deleted_at: new Date(),
+                                deleted_by: null
                             }
                         })
                     }

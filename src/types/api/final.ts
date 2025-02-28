@@ -1,6 +1,7 @@
 import { ApiSuccessResponse } from '../api'
 import { Shape, Color, Category, SHAPES, COLORS, CATEGORIES } from '../nail'
 import { NextRequest } from 'next/server'
+import { AiResultImage } from './ai-result'
 
 // 공통 타입
 export interface FinalImage {
@@ -8,10 +9,10 @@ export interface FinalImage {
   src: string
   shape: Shape
   color: Color
-  pattern: Category
+  category: Category
   isScraped: boolean
   isDeleted: boolean
-  uploadedBy: string
+  checkedBy: string
   createdAt: string
 }
 
@@ -19,24 +20,39 @@ export interface FinalImage {
 export interface GetFinalsParams {
   shape: Shape | null
   color: Color | null
-  pattern: Category | null
+  category: Category | null
   viewMode: 'all' | 'deleted' | 'scraped'
 }
 
+export type NailImage = FinalImage | AiResultImage
 export type GetFinalsResponse = ApiSuccessResponse<{
-  images: FinalImage[]
+  images: NailImage[]
 }>
 
+// GET /api/final/:id
+export interface GetFinalByIdParams {
+  id: string
+}
+
+export type GetFinalByIdResponse = ApiSuccessResponse<{
+  nailDetail: FinalImage
+}>
+
+export function isValidGetFinalByIdParam(id: string | number): boolean {
+  const numId = typeof id === 'string' ? Number(id) : id
+  return !isNaN(numId) && numId > 0
+}
+
 // DELETE /api/final
-export interface DeleteFinalsBody {
-  ids: number[]
+export interface DeleteFinalBody {
+  id: number
 }
 
-export interface DeleteFinalsRequest extends NextRequest {
-  json(): Promise<DeleteFinalsBody>
+export interface DeleteFinalRequest extends NextRequest {
+  json(): Promise<DeleteFinalBody>
 }
 
-export type DeleteFinalsResponse = ApiSuccessResponse<void>
+export type DeleteFinalResponse = ApiSuccessResponse<void>
 
 // POST /api/final/:id/scrap
 export interface ToggleScrapRequest extends NextRequest {
@@ -51,25 +67,24 @@ export function isValidGetFinalsRequest(req: NextRequest): boolean {
   const viewMode = req.nextUrl.searchParams.get('viewMode')
   const shape = req.nextUrl.searchParams.get('shape')
   const color = req.nextUrl.searchParams.get('color')
-  const pattern = req.nextUrl.searchParams.get('pattern')
+  const category = req.nextUrl.searchParams.get('category')
 
   return (
     (!viewMode || ['all', 'deleted', 'scraped'].includes(viewMode)) &&
     (!shape || SHAPES.includes(shape as Shape)) &&
     (!color || COLORS.includes(color as Color)) &&
-    (!pattern || CATEGORIES.includes(pattern as Category))
+    (!category || CATEGORIES.includes(category as Category))
   )
 }
 
-export async function isValidDeleteFinalsRequest(req: DeleteFinalsRequest): Promise<boolean> {
-  try {
-    const body = await req.json()
-    return (
-      Array.isArray(body.ids) &&
-      body.ids.length > 0 &&
-      body.ids.every(id => typeof id === 'number')
-    )
-  } catch {
-    return false
-  }
-} 
+export interface DeleteFinalRequestBody {
+  id: number
+}
+
+export function isValidDeleteFinalRequest(body: DeleteFinalRequestBody): boolean {
+  return (
+    typeof body === 'object' &&
+    body !== null &&
+    typeof body.id === 'number'
+  )
+}
