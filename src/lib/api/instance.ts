@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ApiSuccessResponse, ApiResponseCode, ApiErrorResponse } from '@/types/api'
+import { redirect } from 'next/navigation'
 
 // 응답 타입
 export interface ApiResponse<T = any> {
@@ -49,6 +50,12 @@ api.interceptors.response.use(
     (error: AxiosError<ApiErrorResponse>) => {
         if (error.response) {
             const { code, message, error: responseError } = error.response.data
+
+            // 401 Unauthorized 처리
+            if (code === ApiResponseCode.UNAUTHORIZED) {
+                redirect('/login')
+            }
+
             throw new ApiError(code, message, responseError?.details)
         }
         
