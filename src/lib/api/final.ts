@@ -4,7 +4,8 @@ import type {
   NailImage,
   DeleteFinalResponse,
   GetFinalByIdResponse,
-  FinalImage
+  FinalImage,
+  RecoverFinalResponse
 } from '@/types/api/final'
 import { Shape, Color, Category } from '@/types/nail'
 
@@ -41,5 +42,9 @@ export const finalApi = {
 
   toggleScrap: async (id: number): Promise<void> => {
     await api.post<ToggleScrapResponse>(`/final/${id}/scrap`)
+  },
+
+  recoverFinal: async (id: number): Promise<void> => {
+    await api.post<RecoverFinalResponse>(`/final/${id}/recover`)
   }
 } 

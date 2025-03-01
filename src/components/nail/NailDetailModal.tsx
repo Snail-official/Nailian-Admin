@@ -6,12 +6,13 @@ import ScrapFilledIcon from "@/assets/icons/ScrapFilledIcon.svg"
 import { useState } from "react"
 import { DeleteButton } from "../delete/DeleteButton"
 import { DeleteDialog } from "../delete/DeleteDialog"
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { finalApi } from '@/lib/api/final'
 import { SHAPE_LABELS } from "../filters/NailShapeChips"
 import { COLOR_LABELS } from "../filters/NailColorChips"
 import { CATEGORY_LABELS } from "../filters/NailCategoryChips"
-
+import { toast } from "sonner"
+import { RefreshCcw } from "lucide-react"
 
 interface NailDetailModalProps {
     isOpen: boolean
@@ -29,12 +30,30 @@ export function NailDetailModal({
     onScrap
 }: NailDetailModalProps) {
 
+    const queryClient = useQueryClient()
+
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const { data: nailDetail } = useQuery({
         queryKey: ['nailDetail', tipId],
         queryFn: () => finalApi.getFinalById(tipId),
         enabled: !!tipId && tipId > 0,
     })
+
+    const recoverMutation = useMutation({
+        mutationFn: (id: number) => finalApi.recoverFinal(id),
+        onSuccess: () => {
+            toast.success('네일이 성공적으로 복구되었습니다.')
+            queryClient.invalidateQueries({ queryKey: ['nailDetail', tipId] })
+            queryClient.invalidateQueries({ queryKey: ['finals'] })
+        },
+        onError: (error: any) => {
+            toast.error(error.message || '복구 중 오류가 발생했습니다.')
+        }
+    })
+
+    const handleRecover = () => {
+        recoverMutation.mutate(tipId)
+    }
 
     return (
         <>
@@ -45,7 +64,19 @@ export function NailDetailModal({
                     </DialogTitle>
 
                     <div className="w-full flex justify-end">
-                        {nailDetail?.isDeleted ? null : <DeleteButton onClick={() => setIsDeleteDialogOpen(true)} />}
+                        {nailDetail?.isDeleted ? (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleRecover}
+                                className="flex items-center gap-1"
+                            >
+                                <RefreshCcw className="h-4 w-4" />
+                                <span>복구</span>
+                            </Button>
+                        ) : (
+                            <DeleteButton onClick={() => setIsDeleteDialogOpen(true)} />
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-6">

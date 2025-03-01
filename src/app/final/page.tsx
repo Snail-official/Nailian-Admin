@@ -213,6 +213,7 @@ export default function FinalPage() {
           }}
           images={nailTips?.filter(image => !("checkedBy" in image) && image.id === selectedTipIdForReview) ?? []}
           onComplete={handleReviewComplete}
+          isRecoveryMode={viewMode === 'deleted'}
         />
       )}
     </div>
