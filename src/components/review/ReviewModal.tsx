@@ -17,6 +17,7 @@ interface ReviewModalProps {
     onOpenChange: (open: boolean) => void
     images: { id: number; src: string }[]
     onComplete?: (reviewedData: { id: number; color: Color | null; category: Category | null; isDeleted: boolean }[]) => void
+    isRecoveryMode?: boolean
 }
 
 interface ReviewData {
@@ -25,7 +26,7 @@ interface ReviewData {
     isDeleted: boolean
 }
 
-export function ReviewModal({ isOpen, onOpenChange, images, onComplete }: ReviewModalProps) {
+export function ReviewModal({ isOpen, onOpenChange, images, onComplete, isRecoveryMode }: ReviewModalProps) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [reviewData, setReviewData] = useState<Record<number, ReviewData>>({})
 
@@ -116,16 +117,18 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete }: Review
                                         <div className="absolute inset-0 bg-gray-500 bg-opacity-50 transition-opacity z-[1]" />
                                     )}
                                 </div>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={handleDelete}
-                                    className="absolute top-3 right-3 bg-white hover:bg-gray-100 z-[2]"
-                                >
-                                    <TrashIcon className={`w-5 h-5 ${
-                                        currentImageData?.isDeleted ? 'text-gray-900' : 'text-gray-500'
-                                    }`} />
-                                </Button>
+                                {!isRecoveryMode && (
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={handleDelete}
+                                        className="absolute top-3 right-3 bg-white hover:bg-gray-100 z-[2]"
+                                    >
+                                        <TrashIcon className={`w-5 h-5 ${
+                                            currentImageData?.isDeleted ? 'text-gray-900' : 'text-gray-500'
+                                        }`} />
+                                    </Button>
+                                )}
                             </>
                         )}
                     </div>
