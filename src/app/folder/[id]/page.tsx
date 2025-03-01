@@ -1,143 +1,47 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import EllipseIcon from "@/assets/icons/EllipseIcon.svg"
 import CirclePlusIcon from "@/assets/icons/CirclePlusIcon.svg"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { NailSetDetailModal } from "@/components/nailset/NailSetDetailModal"
-
-// 목 데이터
-const mockNailSets = [
-  {
-    id: 1,
-    uploader: "김네일1",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 2,
-    uploader: "김네일2",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 3,
-    uploader: "김네일3",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 4,
-    uploader: "김네일4",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 5,
-    uploader: "김네일5",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 6,
-    uploader: "김네일6",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 7,
-    uploader: "김네일7",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 8,
-    uploader: "김네일8",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 9,
-    uploader: "김네일9",
-    createdAt: '2024-02-05',
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  }
-]
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { nailSetApi } from "@/lib/api/nail-set"
+import { NailSet } from "@/types/api/nail-set"
+import { FINGER_POSITIONS } from "@/types/nail"
 
 export default function FolderDetailPage() {
-  const params = useParams()
+  const { id } = useParams() as { id: string }
+  const name = useSearchParams().get('name') || ""
   const router = useRouter()
-  const folderId = params.id as string
+  const queryClient = useQueryClient()
   const [selectedNailSet, setSelectedNailSet] = useState<number | null>(null)
-  const [nailSets, setNailSets] = useState(mockNailSets)
+
+  const { data: nailSetsData = [], isLoading } = useQuery({
+    queryKey: ['nailsets', id],
+    queryFn: () => nailSetApi.getNailSets(id)
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: nailSetApi.deleteNailSet,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['nailsets', id] })
+      setSelectedNailSet(null)
+    }
+  })
 
   const handleNailSetClick = (nailSetId: number) => {
     setSelectedNailSet(nailSetId)
   }
 
   const handleDelete = (nailSetId: number) => {
-    // 실제로는 여기서 API 호출을 통해 서버에서 삭제
-    setNailSets(prev => prev.filter(set => set.id !== nailSetId))
+    deleteMutation.mutate(nailSetId)
   }
 
   const handleCreate = () => {
-    router.push(`/combination?folderId=${folderId}`)
+    router.push(`/combination?folderId=${id}`)
   }
 
   return (
@@ -145,60 +49,73 @@ export default function FolderDetailPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-16 mt-6">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-medium">웨딩 네일</span>
+            <span className="text-xl font-medium">{name}</span>
             <EllipseIcon className="w-1 h-1" />
-            <span className="text-lg text-gray-600">총 <span className="text-[#CD19FF]">{mockNailSets.length}</span>개</span>
+            <span className="text-lg text-gray-600">
+              총 <span className="text-[#CD19FF]">{nailSetsData.length}</span>개
+            </span>
           </div>
           <Button
             variant="outline"
             className="bg-white text-black hover:bg-gray-100"
             onClick={handleCreate}
           >
-            <CirclePlusIcon className="w-5 h-5" />
+            <CirclePlusIcon className="w-5 h-5 mr-2" />
             생성하기
           </Button>
         </div>
 
-        {/* 네일 세트 목록 */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {nailSets.length > 0 ? (
-            nailSets.map((nailSet) => (
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <p>로딩 중...</p>
+          </div>
+        ) : nailSetsData.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {nailSetsData.map((nailSet: NailSet) => (
               <div
                 key={nailSet.id}
                 className="relative h-32 w-full bg-[#FBEBD8] rounded-lg shadow flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => handleNailSetClick(nailSet.id)}
               >
-                {nailSet.tips.map((tip, index) => (
+                {FINGER_POSITIONS.map((finger, index) => (
                   <div 
-                    key={tip.id}
+                    key={finger}
                     className="absolute w-20 aspect-square transform -translate-x-1/2"
                     style={{
                       left: `calc(50% + ${(index - 2) * 25}px)`,
                     }}
                   >
                     <Image
-                      src={tip.image}
-                      alt={`${tip.position} 네일`}
+                      src={nailSet[finger].image}
+                      alt={`${finger} nail`}
                       fill
                       className="object-contain"
                     />
                   </div>
                 ))}
               </div>
-            ))
-          ) : (
-            <div className="bg-white rounded-lg shadow p-4">
-              <p className="text-gray-500">아직 네일 세트가 없습니다.</p>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="col-span-full text-center py-8">
+            <p className="text-gray-500">아직 네일 세트가 없습니다.</p>
+            <Button 
+              variant="outline" 
+              className="mt-4"
+              onClick={handleCreate}
+            >
+              <CirclePlusIcon className="w-5 h-5 mr-2" />
+              첫 네일 세트 생성하기
+            </Button>
+          </div>
+        )}
 
         {/* 모달 */}
         {selectedNailSet && (
           <NailSetDetailModal
             isOpen={selectedNailSet !== null}
             onOpenChange={(open) => !open && setSelectedNailSet(null)}
-            nailSet={nailSets.find(set => set.id === selectedNailSet)!}
+            nailSet={nailSetsData.find((set: NailSet) => set.id === selectedNailSet)!}
             onDelete={handleDelete}
           />
         )}
