@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
                 image_url: true,
                 shape: true,
                 created_at: true,
-                user: {
+                user_nail_assets_uploaded_byTouser: {
                     select: {
                         nickname: true
                     }
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
                     id: image.id,
                     src: image.image_url,
                     shape: image.shape,
-                    uploadedBy: image.user.nickname || 'Unknown',
+                    uploadedBy: image.user_nail_assets_uploaded_byTouser.nickname || 'Unknown',
                     createdAt: image.created_at.toISOString()
                 }))
             }

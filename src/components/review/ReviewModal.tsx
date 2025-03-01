@@ -107,7 +107,7 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete }: Review
                             <>
                                 <div className="relative w-full h-full">
                                     <Image
-                                        src={images[currentIndex].src}
+                                        src={images[currentIndex]?.src}
                                         alt={`Review image ${currentIndex + 1}`}
                                         fill
                                         className="object-cover"
