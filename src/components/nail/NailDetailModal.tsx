@@ -36,9 +36,6 @@ export function NailDetailModal({
         enabled: !!tipId && tipId > 0,
     })
 
-    console.log(nailDetail)
-
-
     return (
         <>
             <Dialog open={isOpen} onOpenChange={onOpenChange}>
