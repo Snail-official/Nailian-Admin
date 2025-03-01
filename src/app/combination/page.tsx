@@ -2,67 +2,80 @@
 
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
-import { NailBox } from "@/components/nail/NailBox"
-import { NailTipGrid } from "@/components/nail/NailTipGrid"
+import { useQuery } from "@tanstack/react-query"
+import { finalApi } from "@/lib/api/final"
 import { NailFilterSection } from "@/components/filters/NailFilterSection"
 import { FolderSelect } from "@/components/folder/FolderSelect"
 import { SaveButton } from "@/components/folder/SaveButton"
-
-interface MockImage {
-  id: number
-  src: string
-  alt: string
-  uploadedBy: string
-  date: string
-  shape?: string
-}
-
-const mockNailSets = [
-  {
-    id: 1,
-    uploader: "김네일",
-    createdAt: new Date().toISOString().split('T')[0],
-    tips: [
-      { id: 1, position: "엄지", image: "/mocks/nail.png" },
-      { id: 2, position: "검지", image: "/mocks/nail.png" },
-      { id: 3, position: "중지", image: "/mocks/nail.png" },
-      { id: 4, position: "약지", image: "/mocks/nail.png" },
-      { id: 5, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-  {
-    id: 2,
-    uploader: "이네일",
-    createdAt: new Date().toISOString().split('T')[0],
-    tips: [
-      { id: 6, position: "엄지", image: "/mocks/nail.png" },
-      { id: 7, position: "검지", image: "/mocks/nail.png" },
-      { id: 8, position: "중지", image: "/mocks/nail.png" },
-      { id: 9, position: "약지", image: "/mocks/nail.png" },
-      { id: 10, position: "소지", image: "/mocks/nail.png" },
-    ]
-  },
-]
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { Shape, Color, Category } from "@/types/nail"
+import { FingerPosition } from "@/types/nail"
+import { folderApi } from "@/lib/api/folder"
+import { NailBox } from "@/components/nail/NailBox"
+import { NailTipGrid } from "@/components/nail/NailTipGrid"
+import { FinalImage } from "@/types/api/final"
+import { nailSetApi } from "@/lib/api/nail-set"
+import { NailTip } from "@/types/api/nail-set"
+import { FINGER_POSITIONS } from "@/types/nail"
 
 export default function CombinationPage() {
   const searchParams = useSearchParams()
   const setId = searchParams.get('setId')
-  const folderId = searchParams.get('folderId')
-  const [selectedFolders, setSelectedFolders] = useState<string[]>([])
-  const [selectedShape, setSelectedShape] = useState<string | null>(null)
-  const [selectedColor, setSelectedColor] = useState<string | null>(null)
-  const [selectedPattern, setSelectedPattern] = useState<string | null>(null)
-  const [mockImages] = useState<MockImage[]>(
-    Array.from({ length: 9 }, (_, i) => ({
-      id: i + 1,
-      src: "/mocks/tip.png",
-      alt: `네일 이미지 ${i + 1}`,
-      uploadedBy: "김민지",
-      date: "2024-01-15",
-    }))
-  )
-  const [selectedNailImages, setSelectedNailImages] = useState<Record<string, number>>({})
-  const [activeNail, setActiveNail] = useState<string | null>(null)
+  const folderId = parseInt(searchParams.get('folderId') || '0')
+
+  const [selectedFolders, setSelectedFolders] = useState<number[]>([])
+
+  const [selectedShape, setSelectedShape] = useState<Shape | null>(null)
+  const [selectedColor, setSelectedColor] = useState<Color | null>(null)
+  const [selectedPattern, setSelectedPattern] = useState<Category | null>(null)
+
+  const [selectedNails, setSelectedNails] = useState<Record<FingerPosition, NailTip | null>>({
+    thumb: null,
+    index: null,
+    middle: null,
+    ring: null,
+    pinky: null
+  })
+  
+  const [activeFinger, setActiveFinger] = useState<FingerPosition | null>(null)
+
+  // /api/final 데이터 가져오기
+  const { data: nailTips } = useQuery<FinalImage[]>({
+    queryKey: ['finals', selectedShape, selectedColor, selectedPattern],
+    queryFn: () => finalApi.getFinals<FinalImage>({
+      shape: selectedShape,
+      color: selectedColor,
+      category: selectedPattern,
+      viewMode: 'all'
+    })
+  })
+
+  // 세트 데이터 조회
+  const { data: setData } = useQuery({
+    queryKey: ['nailset', setId],
+    queryFn: () => setId ? nailSetApi.getNailSet(parseInt(setId)) : null,
+    enabled: !!setId,
+  })
+
+  // 폴더 목록 조회
+  const { data: folders = [] } = useQuery({
+    queryKey: ['folders'],
+    queryFn: () => folderApi.getFolders()
+  })
+
+  useEffect(() => {
+    if (setData) {
+      // API 응답으로 받은 데이터를 selectedNails 형식으로 변환
+      setSelectedNails({
+        thumb: setData.thumb,
+        index: setData.index,
+        middle: setData.middle,
+        ring: setData.ring,
+        pinky: setData.pinky
+      })
+    }
+  }, [setData])
 
   // folderId가 있으면 자동으로 해당 폴더 선택
   useEffect(() => {
@@ -71,39 +84,15 @@ export default function CombinationPage() {
     }
   }, [folderId])
 
-  useEffect(() => {
-    if (setId) {
-      // API 호출
-      const nailSet = mockNailSets.find(set => set.id === parseInt(setId))
-      if (nailSet) {
-        setSelectedNailImages({
-          "엄지": nailSet.tips[0].id,
-          "검지": nailSet.tips[1].id,
-          "중지": nailSet.tips[2].id,
-          "약지": nailSet.tips[3].id,
-          "소지": nailSet.tips[4].id,
-        })
-      }
-    }
-  }, [searchParams])
-
-  // 폴더 목록 
-  const folders = [
-    { id: '1', name: '웨딩네일' },
-    { id: '2', name: '데일리네일' },
-    { id: '3', name: '파티네일' },
-    { id: '4', name: '심플네일' },
-  ]
-
-  const handleNailClick = (nail: string) => {
-    if (activeNail === nail) {
-      setActiveNail(null)
+  const handleNailClick = (position: FingerPosition) => {
+    if (activeFinger === position) {
+      setActiveFinger(null)
     } else {
-      setActiveNail(nail)
+      setActiveFinger(position)
     }
   }
 
-  const handleFolderToggle = (folderId: string) => {
+  const handleFolderToggle = (folderId: number) => {
     setSelectedFolders(current =>
       current.includes(folderId)
         ? current.filter(id => id !== folderId)
@@ -111,19 +100,75 @@ export default function CombinationPage() {
     )
   }
 
-  const handleImageSelect = (imageId: number) => {
-    if (activeNail) {
-      setSelectedNailImages(prev => ({
+  const handleImageSelect = (image: { id: number; src: string }) => {
+    if (activeFinger) {
+      setSelectedNails(prev => ({
         ...prev,
-        [activeNail]: imageId
+        [activeFinger]: {
+          tipId: image.id,
+          image: image.src
+        }
       }))
-      setActiveNail(null)
+      setActiveFinger(null)
     }
   }
 
+  // 세트 수정 mutation
+  const updateSetMutation = useMutation({
+    mutationFn: (id: number) => nailSetApi.updateNailSet(id, {
+      thumb: selectedNails.thumb!,
+      index: selectedNails.index!,
+      middle: selectedNails.middle!,
+      ring: selectedNails.ring!,
+      pinky: selectedNails.pinky!
+    }),
+    onSuccess: () => {
+      toast.success("세트가 수정되었습니다")
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "세트 수정 중 오류가 발생했습니다")
+    }
+  })
+
+  // 새 세트 저장 mutation
+  const createSetMutation = useMutation({
+    mutationFn: () => nailSetApi.createNailSet({
+      folderIds: selectedFolders,
+      thumb: selectedNails.thumb!,
+      index: selectedNails.index!,
+      middle: selectedNails.middle!,
+      ring: selectedNails.ring!,
+      pinky: selectedNails.pinky!
+    }),
+    onSuccess: () => {
+      toast.success("세트가 저장되었습니다")
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "세트 저장 중 오류가 발생했습니다")
+    }
+  })
+
   const handleSave = () => {
-    // 저장 로직 구현
-    console.log('Saving...')
+    // 모든 손가락에 네일이 선택되었는지 확인
+    const allFingersSelected = FINGER_POSITIONS.every(pos => selectedNails[pos] !== null)
+    
+    if (!allFingersSelected) {
+      toast.error("모든 손가락에 네일을 선택해주세요")
+      return
+    }
+
+    if (setId) {
+      // Case 1: 기존 세트 수정
+      updateSetMutation.mutate(parseInt(setId))
+    } else if (folderId) {
+      // Case 2: 특정 폴더에 새 세트 저장
+      createSetMutation.mutate()
+    } else if (selectedFolders.length > 0) {
+      // Case 3: 선택된 폴더들에 새 세트 저장
+      createSetMutation.mutate()
+    } else {
+      toast.error("저장할 폴더를 선택해주세요")
+    }
   }
 
   return (
@@ -146,18 +191,17 @@ export default function CombinationPage() {
 
       <div className="flex justify-center mb-4">
         <div className="flex gap-5">
-          {["엄지", "검지", "중지", "약지", "소지"].map((nail) => (
+          {FINGER_POSITIONS.map((position) => (
             <NailBox 
-              key={nail} 
-              onClick={() => handleNailClick(nail)}
-              isSelected={activeNail === nail}
-              selectedImage={selectedNailImages[nail] ? `/mocks/tip.png` : undefined}
+              key={position}
+              onClick={() => handleNailClick(position)}
+              isSelected={activeFinger === position}
+              selectedImage={selectedNails[position]?.image}
               onImageDelete={() => {
-                setSelectedNailImages(prev => {
-                  const newImages = { ...prev }
-                  delete newImages[nail]
-                  return newImages
-                })
+                setSelectedNails(prev => ({
+                  ...prev,
+                  [position]: null
+                }))
               }}
             />
           ))}
@@ -167,15 +211,23 @@ export default function CombinationPage() {
       <NailFilterSection
         selectedShape={selectedShape}
         selectedColor={selectedColor}
-        selectedPattern={selectedPattern}
+        selectedCategory={selectedPattern}
         onShapeSelect={setSelectedShape}
         onColorSelect={setSelectedColor}
-        onPatternSelect={setSelectedPattern}
+        onCategorySelect={setSelectedPattern}
       />
 
       <NailTipGrid
-        images={mockImages}
-        selectedImages={Object.values(selectedNailImages)}
+        usage="combination"
+        images={nailTips?.map((image) => ({
+          id: image.id,
+          src: image.src,
+          username: image.checkedBy || 'Unknown',
+          createdAt: image.createdAt,
+        })) ?? []}
+        selectedImages={Object.values(selectedNails)
+          .filter(nail => nail !== null)
+          .map(nail => nail!.tipId)}
         onImageSelect={handleImageSelect}
       />
     </div>
