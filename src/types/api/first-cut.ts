@@ -55,4 +55,21 @@ export function isValidDeleteFirstCutRequest(body: DeleteFirstCutRequestBody): b
     return Array.isArray(body.ids) && body.ids.length > 0 && body.ids.every(id => typeof id === 'number')
 }
 
-export type DeleteFirstCutResponse = ApiSuccessResponse 
+export type DeleteFirstCutResponse = ApiSuccessResponse
+
+// POST /api/first-cut/download
+export interface DownloadFirstCutRequestBody {
+    ids: number[]
+}
+
+export interface DownloadFirstCutRequest extends NextRequest {
+    json(): Promise<DownloadFirstCutRequestBody>
+}
+
+export function isValidDownloadFirstCutRequest(body: DownloadFirstCutRequestBody): boolean {
+    return Array.isArray(body.ids) && body.ids.length > 0 && body.ids.every(id => typeof id === 'number')
+}
+
+export type DownloadFirstCutResponse = ApiSuccessResponse<{
+    urls: string[]
+}> 
