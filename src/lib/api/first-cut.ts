@@ -5,7 +5,9 @@ import type {
   UploadFirstCutFormData,
   UploadFirstCutResponse,
   DeleteFirstCutRequestBody,
-  DeleteFirstCutResponse
+  DeleteFirstCutResponse,
+  DownloadFirstCutRequestBody,
+  DownloadFirstCutResponse
 } from '@/types/api/first-cut'
 
 export const firstCutApi = {
@@ -32,5 +34,12 @@ export const firstCutApi = {
     await api.delete<DeleteFirstCutResponse>('/first-cut', {
       data: { ids } satisfies DeleteFirstCutRequestBody
     })
+  },
+
+  downloadFirstCuts: async (ids: number[]): Promise<string[]> => {
+    const { data } = await api.post<DownloadFirstCutResponse['data']>('/first-cut/download', {
+      ids
+    } satisfies DownloadFirstCutRequestBody)
+    return data?.urls || []
   }
 } 
