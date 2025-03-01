@@ -12,7 +12,8 @@ import { NailShapeChips } from "@/components/filters/NailShapeChips"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from "sonner"
 import { firstCutApi } from "@/lib/api/first-cut"
-import { Shape, SHAPES } from "@/types/nail"
+import { Shape } from "@/types/nail"
+import { downloadImages } from "@/lib/client/download"
 
 export default function FirstCutPage() {
   const queryClient = useQueryClient()
@@ -51,12 +52,34 @@ export default function FirstCutPage() {
     }
   })
 
+  const downloadMutation = useMutation({
+    mutationFn: async (ids: number[]) => {
+      const urls = await firstCutApi.downloadFirstCuts(ids)
+      await downloadImages(urls)
+    },
+    onSuccess: () => {
+      toast.success("이미지 다운로드가 완료되었습니다.")
+    },
+    onError: (error: any) => {
+      console.error('Download error:', error)
+      toast.error(error.message || "다운로드 중 오류가 발생했습니다.")
+    }
+  })
+
   const handleUploadComplete = (files: File[], shape: Shape) => {
     uploadMutation.mutate({ files, shape })
   }
 
   const handleDelete = () => {
     deleteMutation.mutate(selectedImages)
+  }
+
+  const handleDownload = () => {
+    if (selectedImages.length === 0) {
+      toast.error('다운로드할 이미지를 선택해주세요.')
+      return
+    }
+    downloadMutation.mutate(selectedImages)
   }
 
   if (isLoading) {
@@ -80,9 +103,13 @@ export default function FirstCutPage() {
             <CirclePlusIcon className="w-5 h-5 mr-2" />
             {uploadMutation.isPending ? "업로드 중..." : "업로드하기"}
           </Button>
-          <Button className="bg-black text-white hover:bg-gray-900">
+          <Button 
+            className="bg-black text-white hover:bg-gray-900"
+            onClick={handleDownload}
+            disabled={selectedImages.length === 0 || downloadMutation.isPending}
+          >
             <DownloadIcon className="w-5 h-5 mr-2" />
-            다운로드
+            {downloadMutation.isPending ? "다운로드 중..." : "다운로드"}
           </Button>
         </div>
       </div>
