@@ -11,13 +11,49 @@ export interface Image {
   icon?: React.ReactNode
 }
 
-interface NailTipGridProps {
+// 각 사용처별 Props 타입 정의
+interface BaseNailTipGridProps {
   images: Image[]
   selectedImages?: number[]
-  onImageSelect: (id: number, type?: NailType) => void
 }
 
-export function NailTipGrid({ images, selectedImages, onImageSelect }: NailTipGridProps) {
+interface FinalPageGridProps extends BaseNailTipGridProps {
+  usage: 'final'
+  onImageSelect: (id: number, type: NailType) => void
+}
+
+interface CombinationPageGridProps extends BaseNailTipGridProps {
+  usage: 'combination'
+  onImageSelect: (image: { id: number; src: string }) => void
+}
+
+interface DefaultGridProps extends BaseNailTipGridProps {
+  usage?: never
+  onImageSelect: (id: number) => void
+}
+
+type NailTipGridProps = FinalPageGridProps | CombinationPageGridProps | DefaultGridProps
+
+export function NailTipGrid(props: NailTipGridProps) {
+  const { images, selectedImages } = props
+
+  const handleImageClick = (image: Image) => {
+    if ('usage' in props) {
+      switch (props.usage) {
+        case 'final':
+          if (image.type) {
+            props.onImageSelect(image.id, image.type)
+          }
+          break
+        case 'combination':
+          props.onImageSelect({ id: image.id, src: image.src })
+          break
+      }
+    } else {
+      // usage가 없는 경우 (기본 동작)
+      props.onImageSelect(image.id)
+    }
+  }
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 pl-6 pr-[72px]">
@@ -25,7 +61,7 @@ export function NailTipGrid({ images, selectedImages, onImageSelect }: NailTipGr
         <div 
           key={`${image.id}-${image.createdAt}`}
           className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2 cursor-pointer"
-          onClick={() => image.type ? onImageSelect(image.id, image.type) : onImageSelect(image.id)}
+          onClick={() => handleImageClick(image)}
         >
           {selectedImages && selectedImages.includes(image.id) && (
             <div className="absolute top-1 right-1 z-10">

@@ -8,3 +8,5 @@ export const SHAPES: Shape[] = ["SQUARE", "ROUND", "ALMOND", "BALLERINA", "STILE
 export const CATEGORIES: Category[] = ["ONE_COLOR", "FRENCH", "GRADIENT", "ART"]
 export const COLORS: Color[] = ["WHITE", "BLACK", "BEIGE", "PINK", "YELLOW", "GREEN", "BLUE", "SILVER"] 
 
+export type FingerPosition = 'thumb' | 'index' | 'middle' | 'ring' | 'pinky'
+export const FINGER_POSITIONS: FingerPosition[] = ['thumb', 'index', 'middle', 'ring', 'pinky']

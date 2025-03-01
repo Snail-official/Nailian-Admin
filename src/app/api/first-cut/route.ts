@@ -39,18 +39,18 @@ export async function GET(req: NextRequest) {
                 asset_type: 'nukki'
             },
             include: {
-                user: true
+                user_nail_assets_uploaded_byTouser: true
             },
             orderBy: {
                 created_at: 'desc'
             }
         })
 
-        const images: FirstCutImage[] = assets.map((asset: nail_assets & { user: { nickname: string | null } }) => ({
+        const images: FirstCutImage[] = assets.map((asset: nail_assets & { user_nail_assets_uploaded_byTouser: { nickname: string | null } }) => ({
             id: asset.id,
             src: asset.image_url,
             shape: asset.shape,
-            uploadedBy: asset.user.nickname || 'Unknown',
+            uploadedBy: asset.user_nail_assets_uploaded_byTouser.nickname || 'Unknown',
             createdAt: asset.created_at.toISOString()
         }))
 

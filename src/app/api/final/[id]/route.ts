@@ -64,8 +64,6 @@ export async function GET(
         }
       })
 
-      console.log(scrap)
-
       return createSuccessResponse(
         ApiResponseCode.SUCCESS,
         '네일 이미지 조회 성공',

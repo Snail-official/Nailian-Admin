@@ -15,9 +15,9 @@ import { Button } from "@/components/ui/button"
 import { Check, ChevronDown } from "lucide-react"
 
 interface FolderSelectProps {
-  selectedFolders: string[]
-  folders: { id: string; name: string }[]
-  onFolderToggle: (folderId: string) => void
+  selectedFolders: number[]
+  folders: { id: number; name: string }[]
+  onFolderToggle: (folderId: number) => void
 }
 
 export function FolderSelect({ selectedFolders, folders, onFolderToggle }: FolderSelectProps) {

@@ -185,7 +185,6 @@ export async function GET(req: NextRequest) {
         createdAt: asset.created_at.toISOString()
       }))
 
-      console.log("formattedAssets", formattedAssets)
       resultImages.push(...formattedAssets)
     }
 
