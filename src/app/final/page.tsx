@@ -16,6 +16,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { ReviewModal } from "@/components/review/ReviewModal"
 import { aiResultApi } from "@/lib/api"
+import { NailImage } from "@/types/api/final"
 
 export default function FinalPage() {
   const [selectedShape, setSelectedShape] = useState<Shape | null>(null)
@@ -28,9 +29,9 @@ export default function FinalPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
 
-  const { data: images = [] } = useQuery({
+  const { data: nailTips } = useQuery<NailImage[]>({
     queryKey: ['finals', selectedShape, selectedColor, selectedCategory, viewMode],
-    queryFn: () => finalApi.getFinals({
+    queryFn: () => finalApi.getFinals<NailImage>({
       shape: selectedShape,
       color: selectedColor,
       category: selectedCategory,
@@ -131,7 +132,7 @@ export default function FinalPage() {
       {/* 제목 및 버튼 행 */}
       <div className="flex items-center justify-between mb-8 pl-6 pr-[72px]">
         <h1 className="text-2xl font-bold">
-          총 <span className="text-[#CD19FF]">{images.length}</span>개
+          총 <span className="text-[#CD19FF]">{nailTips?.length}</span>개
         </h1>
         <div className="flex gap-3">
           <Button
@@ -166,7 +167,8 @@ export default function FinalPage() {
       </div>
 
       <NailTipGrid
-        images={images.map(image => {
+        usage="final"
+        images={nailTips?.map(image => {
           // FinalImage 타입인 경우
           if ('checkedBy' in image) {
             return {
@@ -188,7 +190,7 @@ export default function FinalPage() {
               icon: <ExclamationCircleIcon className="w-6 h-6 text-gray-500" />
             };
           }
-        })}
+        })?? []}
         onImageSelect={handleImageSelect}
       />
 
@@ -209,7 +211,7 @@ export default function FinalPage() {
           onOpenChange={(open) => {
             if (!open) setSelectedTipIdForReview(null)
           }}
-          images={images.filter(image => !("checkedBy" in image) && image.id === selectedTipIdForReview)}
+          images={nailTips?.filter(image => !("checkedBy" in image) && image.id === selectedTipIdForReview) ?? []}
           onComplete={handleReviewComplete}
         />
       )}
