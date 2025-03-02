@@ -14,7 +14,7 @@ const nextConfig = {
   images: {
     domains: [s3Domain, cdnDomain].filter(Boolean),
   },
-  assetPrefix: process.env.NODE_ENV === 'production' ? `${process.env.AWS_CLOUDFRONT_DOMAIN}` : '',
+
   webpack(config) {
     // 기존 SVG 처리 방식 제거
     config.module.rules = config.module.rules.filter(rule => !rule.test?.toString().includes('svg'));
