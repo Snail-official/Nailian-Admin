@@ -61,7 +61,7 @@ export function NailTipGrid(props: NailTipGridProps) {
       {images.map((image) => (
         <div 
           key={`${image.id}-${image.createdAt}`}
-          className={`relative rounded-md overflow-hidden ${image.isDownloaded ? '' : 'border-2'}`}
+          className={`relative rounded-md overflow-hidden cursor-pointer ${image.isDownloaded ? '' : 'border-2'}`}
           onClick={() => handleImageClick(image)}
         >
           {selectedImages && selectedImages.includes(image.id) && (
