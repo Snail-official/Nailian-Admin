@@ -58,7 +58,9 @@ export default function FirstCutPage() {
       await downloadImages(urls)
     },
     onSuccess: () => {
+      setSelectedImages([])
       toast.success("이미지 다운로드가 완료되었습니다.")
+      queryClient.invalidateQueries({ queryKey: ['firstCut'] })
     },
     onError: (error) => {
       console.error('Download error:', error)
