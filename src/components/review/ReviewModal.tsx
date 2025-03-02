@@ -11,24 +11,19 @@ import { NailColorChips } from "@/components/filters/NailColorChips"
 import { TrashIcon } from "lucide-react"
 import { Category, Color } from "@/types/nail"
 import { NailCategoryChips } from "../filters/NailCategoryChips"
+import { AiResultReview } from "@/types/api/ai-result"
 
 interface ReviewModalProps {
     isOpen: boolean
     onOpenChange: (open: boolean) => void
     images: { id: number; src: string }[]
-    onComplete?: (reviewedData: { id: number; color: Color | null; category: Category | null; isDeleted: boolean }[]) => void
+    onComplete?: (reviewedData: AiResultReview[]) => void
     isRecoveryMode?: boolean
-}
-
-interface ReviewData {
-    color: Color | null
-    category: Category | null
-    isDeleted: boolean
 }
 
 export function ReviewModal({ isOpen, onOpenChange, images, onComplete, isRecoveryMode }: ReviewModalProps) {
     const [currentIndex, setCurrentIndex] = useState(0)
-    const [reviewData, setReviewData] = useState<Record<number, ReviewData>>({})
+    const [reviewData, setReviewData] = useState<Record<number, Omit<AiResultReview, 'id'>>>({})
 
     const handlePrevious = () => {
         if (currentIndex > 0) {

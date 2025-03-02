@@ -40,7 +40,7 @@ export interface SignupRequest extends NextRequest {
   json(): Promise<SignupCredentials>
 }
 
-export function isValidSignupRequest(body: unknown): boolean {
+export function isValidSignupBody(body: unknown): body is SignupCredentials {
   return (
     typeof body === 'object' &&
     body !== null &&

@@ -25,13 +25,28 @@ export interface CreateFolderRequest extends NextRequest {
   json(): Promise<CreateFolderBody>
 }
 
-export async function isValidCreateFolderRequest(req: NextRequest): Promise<boolean> {
-  try {
-    const body = await req.json()
-    return typeof body.name === 'string' && body.name.length > 0
-  } catch {
-    return false
-  }
+export async function isValidCreateFolderRequest(body: any): Promise<boolean> {
+  return typeof body.name === 'string' && body.name.length > 0
 }
 
 export type CreateFolderResponse = ApiSuccessResponse
+
+// DELETE /api/folder/:id
+export function isValidDeleteFolderRequest(params: { id: string }): boolean {
+  const id = Number(params.id)
+  return !isNaN(id) && id > 0
+}
+
+export type DeleteFolderResponse = ApiSuccessResponse
+
+// PUT /api/folder/:id
+export interface UpdateFolderBody {
+  name: string
+}
+
+export function isValidUpdateFolderRequest(params: { id: string }): boolean {
+  const id = Number(params.id)
+  return !isNaN(id) && id > 0
+}
+
+export type UpdateFolderResponse = ApiSuccessResponse

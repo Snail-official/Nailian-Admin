@@ -21,7 +21,7 @@ export const aiResultApi = {
     files.forEach((file: File) => formData.append('files', file))
     if (shape) formData.append('shape', shape)
 
-    await api.post<UploadAiResultResponse>('/ai-result/upload', formData, {
+    await api.post<UploadAiResultResponse>('/ai-result', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

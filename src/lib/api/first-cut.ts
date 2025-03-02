@@ -23,7 +23,7 @@ export const firstCutApi = {
     files.forEach(file => formData.append('files', file))
     if (shape) formData.append('shape', shape)
 
-    await api.post<UploadFirstCutResponse>('/first-cut/upload', formData, {
+    await api.post<UploadFirstCutResponse>('/first-cut', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
