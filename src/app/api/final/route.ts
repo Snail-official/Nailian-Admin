@@ -5,3 +5,4 @@ import { finalController } from '@/server/controllers/finalController'
 export async function GET(req: NextRequest) {
   return finalController.getFinals(req)
 }
+

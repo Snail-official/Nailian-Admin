@@ -47,7 +47,7 @@ export default function FinalPage() {
       toast.success("검토가 완료되었습니다.")
       queryClient.invalidateQueries({ queryKey: ['finals'] })
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "검토 중 오류가 발생했습니다.")
     }
   })
@@ -60,7 +60,7 @@ export default function FinalPage() {
       queryClient.invalidateQueries({ queryKey: ['finals'] })
       setSelectedTipIdForDetail(null)
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "이미지 삭제 중 오류가 발생했습니다.")
       console.error('Delete error:', error)
     }
@@ -76,7 +76,7 @@ export default function FinalPage() {
       // 목록 데이터도 함께 갱신
       queryClient.invalidateQueries({ queryKey: ['finals'] })
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "스크랩 처리 중 오류가 발생했습니다.")
       console.error('Scrap error:', error)
     }

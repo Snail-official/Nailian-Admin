@@ -34,7 +34,7 @@ export default function FirstCutPage() {
       toast.success("업로드가 완료되었습니다.")
       queryClient.invalidateQueries({ queryKey: ['firstCut'] })
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "업로드 중 오류가 발생했습니다.")
     }
   })
@@ -47,7 +47,7 @@ export default function FirstCutPage() {
       toast.success("선택한 이미지가 삭제되었습니다.")
       queryClient.invalidateQueries({ queryKey: ['firstCut'] })
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "삭제 중 오류가 발생했습니다.")
     }
   })
@@ -60,7 +60,7 @@ export default function FirstCutPage() {
     onSuccess: () => {
       toast.success("이미지 다운로드가 완료되었습니다.")
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error('Download error:', error)
       toast.error(error.message || "다운로드 중 오류가 발생했습니다.")
     }

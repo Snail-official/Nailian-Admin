@@ -1,4 +1,4 @@
-import { ApiSuccessResponse } from '../api'
+import { ApiSuccessResponse } from './response'
 import { Shape, Color, Category, SHAPES, COLORS, CATEGORIES } from '../nail'
 import { NextRequest } from 'next/server'
 import { AiResultImage } from './ai-result'

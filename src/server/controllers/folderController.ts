@@ -1,12 +1,11 @@
 import { NextRequest } from 'next/server'
 import { auth } from '@/server/lib/auth'
 import { folderService } from '@/server/services/folderService'
-import { ApiResponseCode } from '@/types/api'
+import { ApiResponseCode } from '@/types/api/response'
 import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetFoldersResponse,
   CreateFolderResponse,
-  isValidGetFoldersRequest,
   isValidCreateFolderRequest,
   isValidDeleteFolderRequest,
   DeleteFolderResponse,
@@ -20,12 +19,8 @@ export class FolderController {
   private service = folderService
 
   // GET /api/folder
-  async getFolders(req: NextRequest) {
+  async getFolders() {
     return controllerHandler(async () => {
-      if (!isValidGetFoldersRequest(req)) {
-        throw new Error('잘못된 요청 형식입니다.')
-      }
-
       const folders = await this.service.getFolders()
 
       return createSuccessResponse<GetFoldersResponse['data']>(
@@ -60,11 +55,9 @@ export class FolderController {
   }
 
   // DELETE /api/folder/:id
-  async deleteFolder(req: NextRequest, context: { params: { id: string } }) {
+  async deleteFolder(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const params = await context.params
-      
-      if (!isValidDeleteFolderRequest(params)) {
+      if (!isValidDeleteFolderRequest(id)) {
         throw new Error('유효하지 않은 ID입니다.')
       }
 
@@ -73,7 +66,6 @@ export class FolderController {
         throw new Error('인증이 필요합니다.')
       }
 
-      const id = Number(params.id)
       await this.service.deleteFolder(id)
 
       return createSuccessResponse<DeleteFolderResponse['data']>(
@@ -84,11 +76,9 @@ export class FolderController {
   }
 
   // PUT /api/folder/:id
-  async updateFolder(req: NextRequest, context: { params: { id: string } }) {
+  async updateFolder(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const params = await context.params
-
-      if (!isValidUpdateFolderRequest(params)) {
+      if (!isValidUpdateFolderRequest(id)) {
         throw new Error('유효하지 않은 ID입니다.')
       }
 
@@ -102,7 +92,6 @@ export class FolderController {
         throw new Error('인증이 필요합니다.')
       }
 
-      const id = Number(params.id)
       await this.service.updateFolder(id, body.name)
 
       return createSuccessResponse<UpdateFolderResponse['data']>(

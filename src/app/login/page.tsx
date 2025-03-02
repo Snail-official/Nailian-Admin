@@ -21,7 +21,7 @@ export default function LoginPage() {
             toast.success("로그인 성공!")
             router.push("/")
         },
-        onError: (error: any) => {
+        onError: (error) => {
             toast.error(error.message || "로그인 중 오류가 발생했습니다.")
         }
     })

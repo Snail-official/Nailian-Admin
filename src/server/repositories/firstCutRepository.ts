@@ -1,6 +1,5 @@
 import { prisma } from '@/server/lib/prisma'
 import { Shape } from '@/types/nail'
-import { nail_assets } from '@prisma/client'
 
 export class FirstCutRepository {
   // 이미지 조회

@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { ApiSuccessResponse, ApiResponseCode, ApiErrorResponse } from '@/types/api'
+import { ApiSuccessResponse, ApiResponseCode, ApiErrorResponse } from '@/types/api/response'
 import { redirect } from 'next/navigation'
 
 // 응답 타입
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T> {
     code: ApiResponseCode
     message: string
     data?: T

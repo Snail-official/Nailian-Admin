@@ -1,4 +1,4 @@
-import { ApiSuccessResponse } from '../api'
+import { ApiSuccessResponse } from './response'
 import { NextRequest } from 'next/server'
 
 // 공통 타입
@@ -8,10 +8,6 @@ export interface Folder {
 }
 
 // GET /api/folder
-export function isValidGetFoldersRequest(req: NextRequest): boolean {
-  return true
-}
-
 export type GetFoldersResponse = ApiSuccessResponse<{
   folders: Folder[]
 }>
@@ -25,15 +21,14 @@ export interface CreateFolderRequest extends NextRequest {
   json(): Promise<CreateFolderBody>
 }
 
-export async function isValidCreateFolderRequest(body: any): Promise<boolean> {
+export function isValidCreateFolderRequest(body: CreateFolderBody) {
   return typeof body.name === 'string' && body.name.length > 0
 }
 
 export type CreateFolderResponse = ApiSuccessResponse
 
 // DELETE /api/folder/:id
-export function isValidDeleteFolderRequest(params: { id: string }): boolean {
-  const id = Number(params.id)
+export function isValidDeleteFolderRequest(id: number): boolean {
   return !isNaN(id) && id > 0
 }
 
@@ -44,8 +39,7 @@ export interface UpdateFolderBody {
   name: string
 }
 
-export function isValidUpdateFolderRequest(params: { id: string }): boolean {
-  const id = Number(params.id)
+export function isValidUpdateFolderRequest(id: number): boolean {
   return !isNaN(id) && id > 0
 }
 

@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import { auth } from '@/server/lib/auth'
 import { finalService } from '@/server/services/finalService'
-import { ApiResponseCode } from '@/types/api'
-import { createSuccessResponse, createErrorResponse } from '@/server/lib/api-response'
+import { ApiResponseCode } from '@/types/api/response'
+import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetFinalByIdResponse,
   DeleteFinalResponse,
@@ -19,23 +19,18 @@ export class FinalController {
   private service = finalService
 
   // GET /api/final/:id
-  async getFinalById(req: NextRequest, context: { params: { id: string } }) {
+  async getFinalById(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const params = await context.params
-      const id = params.id
-      
-      if (!isValidGetFinalByIdParam(id)) {
+      if (isNaN(id) || id <= 0) {
         throw new Error('유효하지 않은 ID입니다.')
       }
-      
-      const numId = Number(id)
       
       const admin = await auth()
       if (!admin) {
         throw new Error('인증이 필요합니다.')
       }
       
-      const nailDetail = await this.service.getFinalById(numId, parseInt(admin.id))
+      const nailDetail = await this.service.getFinalById(id, parseInt(admin.id))
       
       return createSuccessResponse<GetFinalByIdResponse['data']>(
         ApiResponseCode.SUCCESS,
@@ -46,22 +41,18 @@ export class FinalController {
   }
   
   // DELETE /api/final/:id
-  async deleteFinal(req: NextRequest, { params }: { params: { id: string } }) {
+  async deleteFinal(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const id = params.id
-      
-      if (!isValidGetFinalByIdParam(id)) {
+      if (isNaN(id) || id <= 0) {
         throw new Error('유효하지 않은 ID입니다.')
       }
-      
-      const numId = Number(id)
       
       const admin = await auth()
       if (!admin) {
         throw new Error('인증이 필요합니다.')
       }
       
-      await this.service.deleteFinal(numId)
+      await this.service.deleteFinal(id)
       
       return createSuccessResponse<DeleteFinalResponse['data']>(
         ApiResponseCode.SUCCESS,
@@ -71,24 +62,19 @@ export class FinalController {
   }
   
   // POST /api/final/:id/recover
-  async recoverFinal(req: NextRequest, context: { params: { id: string } }) {
+  async recoverFinal(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const params = await context.params
-      const id = params.id
-      
       if (!isValidGetFinalByIdParam(id)) {
         throw new Error('유효하지 않은 ID입니다.')
       }
-      
-      const numId = Number(id)
-      
+  
       const admin = await auth()
       if (!admin) {
         throw new Error('인증이 필요합니다.')
       }
-      
-      await this.service.recoverFinal(numId)
-      
+  
+      await this.service.recoverFinal(id)
+  
       return createSuccessResponse<RecoverFinalResponse['data']>(
         ApiResponseCode.SUCCESS,
         '네일이 성공적으로 복구되었습니다.'
@@ -97,23 +83,18 @@ export class FinalController {
   }
   
   // POST /api/final/:id/scrap
-  async toggleScrap(req: NextRequest, context: { params: { id: string } }) {
+  async toggleScrap(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const params = await context.params
-      const id = params.id
-      
       if (!isValidGetFinalByIdParam(id)) {
         throw new Error('유효하지 않은 ID입니다.')
       }
-      
-      const numId = Number(id)
       
       const admin = await auth()
       if (!admin) {
         throw new Error('인증이 필요합니다.')
       }
       
-      const result = await this.service.toggleScrap(numId, parseInt(admin.id))
+      const result = await this.service.toggleScrap(id, parseInt(admin.id))
       
       return createSuccessResponse<ToggleScrapResponse['data']>(
         ApiResponseCode.SUCCESS,

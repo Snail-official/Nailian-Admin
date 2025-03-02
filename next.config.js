@@ -9,24 +9,30 @@ const cdnDomain = process.env.AWS_CLOUDFRONT_DOMAIN
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
+    turbo: false, // Turbopack 비활성화
   },
   images: {
     domains: [s3Domain, cdnDomain].filter(Boolean),
   },
   assetPrefix: process.env.NODE_ENV === 'production' ? `${process.env.AWS_CLOUDFRONT_DOMAIN}` : '',
   webpack(config) {
+    // 기존 SVG 처리 방식 제거
+    config.module.rules = config.module.rules.filter(rule => !rule.test?.toString().includes('svg'));
+
+    // Webpack에서 SVG를 React 컴포넌트로 변환하도록 설정
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            icon: true,
+            svgo: false, // SVGO 최적화 비활성화 (SVG 변환 충돌 방지)
+          },
+        },
+      ],
     });
+
     return config;
   },
 };

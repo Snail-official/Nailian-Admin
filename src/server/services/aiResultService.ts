@@ -1,6 +1,6 @@
 import { aiResultRepository } from '@/server/repositories/aiResultRepository'
 import { uploadToS3 } from '@/server/lib/s3'
-import { Shape, Category, Color } from '@/types/nail'
+import { Shape } from '@/types/nail'
 import { AiResultImage, AiResultReview } from '@/types/api/ai-result'
 import { Prisma } from '@prisma/client'
 

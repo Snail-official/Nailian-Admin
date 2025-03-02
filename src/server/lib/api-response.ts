@@ -1,7 +1,7 @@
 import 'server-only'    
 
 import { NextResponse } from 'next/server'
-import { ApiResponseCode, ApiSuccessResponse, ApiErrorResponse } from '@/types/api'
+import { ApiResponseCode, ApiSuccessResponse, ApiErrorResponse } from '@/types/api/response'
 
 export function createSuccessResponse<T = null>(
     code: ApiResponseCode = ApiResponseCode.SUCCESS,
