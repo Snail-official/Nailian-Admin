@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { auth } from '@/server/lib/auth'
 import { folderService } from '@/server/services/folderService'
-import { ApiResponseCode } from '@/types/api'
+import { ApiResponseCode } from '@/types/api/response'
 import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetFoldersResponse,

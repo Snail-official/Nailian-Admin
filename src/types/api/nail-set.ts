@@ -1,4 +1,4 @@
-import { ApiSuccessResponse } from '../api'
+import { ApiSuccessResponse } from './response'
 
 // 공통 타입
 export interface NailTip {

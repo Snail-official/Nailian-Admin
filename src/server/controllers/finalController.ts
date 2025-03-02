@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { auth } from '@/server/lib/auth'
 import { finalService } from '@/server/services/finalService'
-import { ApiResponseCode } from '@/types/api'
+import { ApiResponseCode } from '@/types/api/response'
 import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetFinalByIdResponse,

@@ -1,4 +1,4 @@
-import { ApiSuccessResponse } from '../api'
+import { ApiSuccessResponse } from './response'
 import { NextRequest } from 'next/server'
 
 // 공통 타입

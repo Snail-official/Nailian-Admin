@@ -2,7 +2,7 @@ import { firstCutService } from '@/server/services/firstCutService'
 import { NextRequest } from 'next/server'
 import { auth } from '@/server/lib/auth'
 
-import { ApiResponseCode } from '@/types/api'
+import { ApiResponseCode } from '@/types/api/response'
 import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetFirstCutResponse,

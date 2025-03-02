@@ -1,4 +1,4 @@
-import { ApiSuccessResponse } from '../api'
+import { ApiSuccessResponse } from './response'
 import { NextRequest } from 'next/server'
 import { Shape, SHAPES } from '../nail'
 

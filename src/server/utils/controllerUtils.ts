@@ -1,5 +1,5 @@
 import { createErrorResponse } from '@/server/lib/api-response'
-import { ApiResponseCode } from '@/types/api'
+import { ApiResponseCode } from '@/types/api/response'
 
 export async function controllerHandler<T>(
   handler: () => Promise<T>,

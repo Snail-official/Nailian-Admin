@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { ApiSuccessResponse } from '../api'
+import { ApiSuccessResponse } from './response'
 import { Category, Color, Shape } from '../nail'
 
 // 공통 타입
