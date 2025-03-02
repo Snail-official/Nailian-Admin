@@ -90,7 +90,7 @@ async getFinals(params: {
   }) {
     const { shape, color, category, viewMode, adminId } = params
     
-    const isDeleted = viewMode === 'deleted' ? true : viewMode === 'all' ? false : undefined
+    const isDeleted = viewMode === 'deleted' ? true : false
     const isScraped = viewMode === 'scraped'
     
     let resultImages: NailImage[] = []
