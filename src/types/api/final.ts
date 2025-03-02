@@ -72,14 +72,6 @@ export interface DeleteFinalRequestBody {
   id: number
 }
 
-export function isValidDeleteFinalRequest(body: DeleteFinalRequestBody): boolean {
-  return (
-    typeof body === 'object' &&
-    body !== null &&
-    typeof body.id === 'number'
-  )
-}
-
 // POST /api/final/:id/scrap
 export interface ToggleScrapRequest extends NextRequest {
   params: {
