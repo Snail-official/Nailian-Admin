@@ -18,7 +18,8 @@ export class FirstCutService {
       src: asset.image_url,
       shape: asset.shape as Shape,
       uploadedBy: asset.user_nail_assets_uploaded_byTouser?.nickname || 'Unknown',
-      createdAt: asset.created_at.toISOString()
+      createdAt: asset.created_at.toISOString(),
+      isDownloaded: asset.is_downloaded || false
     }))
 
     return images
