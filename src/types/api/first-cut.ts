@@ -8,6 +8,7 @@ export interface FirstCutImage {
     shape: Shape | null
     uploadedBy: string
     createdAt: string
+    isDownloaded: boolean
 }
 
 // GET /api/first-cut
