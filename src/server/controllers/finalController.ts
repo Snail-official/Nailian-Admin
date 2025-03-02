@@ -19,8 +19,9 @@ export class FinalController {
   private service = finalService
 
   // GET /api/final/:id
-  async getFinalById(req: NextRequest, { params }: { params: { id: string } }) {
+  async getFinalById(req: NextRequest, context: { params: { id: string } }) {
     return controllerHandler(async () => {
+      const params = await context.params
       const id = params.id
       
       if (!isValidGetFinalByIdParam(id)) {
@@ -70,8 +71,9 @@ export class FinalController {
   }
   
   // POST /api/final/:id/recover
-  async recoverFinal(req: NextRequest, { params }: { params: { id: string } }) {
+  async recoverFinal(req: NextRequest, context: { params: { id: string } }) {
     return controllerHandler(async () => {
+      const params = await context.params
       const id = params.id
       
       if (!isValidGetFinalByIdParam(id)) {
@@ -95,8 +97,9 @@ export class FinalController {
   }
   
   // POST /api/final/:id/scrap
-  async toggleScrap(req: NextRequest, { params }: { params: { id: string } }) {
+  async toggleScrap(req: NextRequest, context: { params: { id: string } }) {
     return controllerHandler(async () => {
+      const params = await context.params
       const id = params.id
       
       if (!isValidGetFinalByIdParam(id)) {
@@ -144,8 +147,6 @@ export class FinalController {
         viewMode,
         adminId: parseInt(admin.id)
       })
-
-      console.log("images", images)
       
       return createSuccessResponse<GetFinalsResponse['data']>(
         ApiResponseCode.SUCCESS,

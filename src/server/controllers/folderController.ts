@@ -60,8 +60,10 @@ export class FolderController {
   }
 
   // DELETE /api/folder/:id
-  async deleteFolder(req: NextRequest, { params }: { params: { id: string } }) {
+  async deleteFolder(req: NextRequest, context: { params: { id: string } }) {
     return controllerHandler(async () => {
+      const params = await context.params
+      
       if (!isValidDeleteFolderRequest(params)) {
         throw new Error('유효하지 않은 ID입니다.')
       }
@@ -82,8 +84,10 @@ export class FolderController {
   }
 
   // PUT /api/folder/:id
-  async updateFolder(req: NextRequest, { params }: { params: { id: string } }) {
+  async updateFolder(req: NextRequest, context: { params: { id: string } }) {
     return controllerHandler(async () => {
+      const params = await context.params
+
       if (!isValidUpdateFolderRequest(params)) {
         throw new Error('유효하지 않은 ID입니다.')
       }
