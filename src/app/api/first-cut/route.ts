@@ -8,3 +8,7 @@ export async function GET(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   return firstCutController.deleteFirstCuts(req)
 } 
+
+export async function POST(req: NextRequest) {
+  return firstCutController.uploadFirstCuts(req)
+} 
