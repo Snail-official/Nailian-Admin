@@ -12,6 +12,13 @@ export interface AiResultImage {
     createdAt: string
 }
 
+export interface AiResultReview {
+    id: number;    
+    isDeleted: boolean;   
+    category: Category | null;  
+    color: Color | null;       
+  }
+
 // GET /api/ai-result
 export function isValidGetAiResultRequest(req: NextRequest): boolean {
     const shape = req.nextUrl.searchParams.get('shape')
