@@ -9,6 +9,7 @@ export interface Image {
   createdAt: string
   type?: NailType
   icon?: React.ReactNode
+  isDownloaded?: boolean
 }
 
 // 각 사용처별 Props 타입 정의
@@ -60,7 +61,7 @@ export function NailTipGrid(props: NailTipGridProps) {
       {images.map((image) => (
         <div 
           key={`${image.id}-${image.createdAt}`}
-          className="relative rounded-lg border-2 border-[#CD19FF] overflow-hidden p-2 cursor-pointer"
+          className={`relative rounded-md overflow-hidden ${image.isDownloaded ? '' : 'border-2'}`}
           onClick={() => handleImageClick(image)}
         >
           {selectedImages && selectedImages.includes(image.id) && (
@@ -89,6 +90,10 @@ export function NailTipGrid(props: NailTipGridProps) {
               {new Date(image.createdAt).toISOString().replace('T', ' ').slice(0, 16)}
             </p>
           </div>
+          {image.isDownloaded && (
+            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+            </div>
+          )}
         </div>
       ))}
     </div>

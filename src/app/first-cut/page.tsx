@@ -129,7 +129,8 @@ export default function FirstCutPage() {
           id: image.id,
           src: image.src,
           username: image.uploadedBy,
-          createdAt: image.createdAt
+          createdAt: image.createdAt,
+          isDownloaded: image.isDownloaded
         }))}
         selectedImages={selectedImages}
         onImageSelect={(id) => setSelectedImages(prev => 
