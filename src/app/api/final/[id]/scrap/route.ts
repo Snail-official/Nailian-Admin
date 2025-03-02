@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { finalController } from '@/controllers/finalController'
+import { finalController } from '@/server/controllers/finalController'
 
 // POST /api/final/:id/scrap
 export async function POST(

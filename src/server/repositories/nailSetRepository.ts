@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/server/prisma'
+import { prisma } from '@/server/lib/prisma'
 
 export class NailSetRepository {
   // 폴더 ID로 네일 세트 조회

@@ -1,9 +1,9 @@
-import { firstCutService } from '@/services/firstCutService'
+import { firstCutService } from '@/server/services/firstCutService'
 import { NextRequest } from 'next/server'
-import { auth } from '@/lib/server/auth'
+import { auth } from '@/server/lib/auth'
 
 import { ApiResponseCode } from '@/types/api'
-import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
+import { createSuccessResponse, createErrorResponse } from '@/server/lib/api-response'
 import { 
   GetFirstCutResponse,
   UploadFirstCutResponse,
@@ -15,7 +15,7 @@ import {
   isValidDeleteFirstCutRequest
 } from '@/types/api/first-cut'
 import { Shape } from '@/types/nail'
-import { controllerHandler } from '@/utils/controllerUtils'
+import { controllerHandler } from '@/server/utils/controllerUtils'
 
 export class FirstCutController {
   private service = firstCutService

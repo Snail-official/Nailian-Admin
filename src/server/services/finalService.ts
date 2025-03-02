@@ -1,4 +1,4 @@
-import { finalRepository } from '@/repositories/finalRepository'
+import { finalRepository } from '@/server/repositories/finalRepository'
 import { Shape, Color, Category } from '@/types/nail'
 import { NailImage } from '@/types/api/final'
 import { AiResultImage } from '@/types/api/ai-result'

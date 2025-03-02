@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { folderController } from '@/controllers/folderController'
+import { folderController } from '@/server/controllers/folderController'
 
 // GET /api/folder
 export async function GET(req: NextRequest) {

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { nailSetController } from '@/controllers/nailSetController'
+import { nailSetController } from '@/server/controllers/nailSetController'
 
 export async function GET(
   req: NextRequest,

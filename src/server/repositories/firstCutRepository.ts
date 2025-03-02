@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/server/prisma'
+import { prisma } from '@/server/lib/prisma'
 import { Shape } from '@/types/nail'
 import { nail_assets } from '@prisma/client'
 

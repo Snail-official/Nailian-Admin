@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/server/prisma'
+import { prisma } from '@/server/lib/prisma'
 import { Shape, Color, Category } from '@/types/nail'
 
 export class FinalRepository {

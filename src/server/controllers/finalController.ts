@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
-import { auth } from '@/lib/server/auth'
-import { finalService } from '@/services/finalService'
+import { auth } from '@/server/lib/auth'
+import { finalService } from '@/server/services/finalService'
 import { ApiResponseCode } from '@/types/api'
-import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
+import { createSuccessResponse, createErrorResponse } from '@/server/lib/api-response'
 import { 
   GetFinalByIdResponse,
   DeleteFinalResponse,
@@ -13,7 +13,7 @@ import {
   ToggleScrapResponse
 } from '@/types/api/final'
 import { Shape, Color, Category } from '@/types/nail'
-import { controllerHandler } from '@/utils/controllerUtils'
+import { controllerHandler } from '@/server/utils/controllerUtils'
 
 export class FinalController {
   private service = finalService

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { firstCutController } from '@/controllers/firstCutController'
+import { firstCutController } from '@/server/controllers/firstCutController'
 
 export async function GET(req: NextRequest) {
   return firstCutController.getFirstCuts(req)

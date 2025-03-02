@@ -1,4 +1,4 @@
-import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
+import { createSuccessResponse, createErrorResponse } from '@/server/lib/api-response'
 import { ApiResponseCode } from '@/types/api'
 
 export async function controllerHandler<T>(

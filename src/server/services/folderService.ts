@@ -1,4 +1,4 @@
-import { folderRepository } from '@/repositories/folderRepository'
+import { folderRepository } from '@/server/repositories/folderRepository'
 import { Folder } from '@/types/api/folder'
 
 export class FolderService {

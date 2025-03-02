@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/server/prisma'
+import { prisma } from '@/server/lib/prisma'
 
 export class FolderRepository {
   // 모든 폴더 조회

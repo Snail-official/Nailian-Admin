@@ -13,7 +13,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from "sonner"
 import { firstCutApi } from "@/lib/api/first-cut"
 import { Shape } from "@/types/nail"
-import { downloadImages } from "@/lib/client/download"
+import { downloadImages } from "@/lib/download"
 
 export default function FirstCutPage() {
   const queryClient = useQueryClient()

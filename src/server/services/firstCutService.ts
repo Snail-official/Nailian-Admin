@@ -1,5 +1,5 @@
-import { firstCutRepository } from '@/repositories/firstCutRepository'
-import { uploadToS3 } from '@/lib/server/s3'
+import { firstCutRepository } from '@/server/repositories/firstCutRepository'
+import { uploadToS3 } from '@/server/lib/s3'
 import { Shape } from '@/types/nail'
 import { FirstCutImage } from '@/types/api/first-cut'
 

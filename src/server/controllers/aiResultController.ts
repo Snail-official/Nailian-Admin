@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
-import { auth } from '@/lib/server/auth'
-import { aiResultService } from '@/services/aiResultService'
+import { auth } from '@/server/lib/auth'
+import { aiResultService } from '@/server/services/aiResultService'
 import { ApiResponseCode } from '@/types/api'
-import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
+import { createSuccessResponse, createErrorResponse } from '@/server/lib/api-response'
 import {
   GetAiResultResponse,
   UploadAiResultResponse,
@@ -12,7 +12,7 @@ import {
   isValidReviewAiResultRequest
 } from '@/types/api/ai-result'
 import { Shape } from '@/types/nail'
-import { controllerHandler } from '@/utils/controllerUtils'
+import { controllerHandler } from '@/server/utils/controllerUtils'
 
 export class AiResultController {
   private service = aiResultService

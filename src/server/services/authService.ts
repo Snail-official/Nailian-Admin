@@ -1,4 +1,4 @@
-import { authRepository } from '@/repositories/authRepository'
+import { authRepository } from '@/server/repositories/authRepository'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 

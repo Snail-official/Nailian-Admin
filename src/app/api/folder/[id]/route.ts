@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { folderController } from '@/controllers/folderController'
+import { folderController } from '@/server/controllers/folderController'
 
 export async function DELETE(
   req: NextRequest,

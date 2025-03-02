@@ -1,5 +1,5 @@
-import pool from '@/lib/server/db'
-import redis from '@/lib/server/redis'
+import pool from '@/server/lib/db'
+import redis from '@/server/lib/redis'
 import { RowDataPacket } from 'mysql2'
 
 export class AuthRepository {

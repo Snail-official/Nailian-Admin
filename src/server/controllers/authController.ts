@@ -1,11 +1,11 @@
 import { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
-import { authService } from '@/services/authService'
-import { createSuccessResponse, createErrorResponse } from '@/lib/server/api-response'
+import { authService } from '@/server/services/authService'
+import { createSuccessResponse, createErrorResponse } from '@/server/lib/api-response'
 import { ApiResponseCode } from '@/types/api'
 import { isValidLoginBody, isValidSignupBody, LoginResponse, RefreshResponse, SignupResponse } from '@/types/api/auth'
 import { isValidRefreshRequest } from '@/types/api/auth'
-import { controllerHandler } from '@/utils/controllerUtils'
+import { controllerHandler } from '@/server/utils/controllerUtils'
 
 export class AuthController {
   private service = authService

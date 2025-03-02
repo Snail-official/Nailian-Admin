@@ -1,4 +1,4 @@
-import { nailSetRepository } from '@/repositories/nailSetRepository'
+import { nailSetRepository } from '@/server/repositories/nailSetRepository'
 import { NailSet, NailTip } from '@/types/api/nail-set'
 
 export class NailSetService {

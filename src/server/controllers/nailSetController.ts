@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
-import { auth } from '@/lib/server/auth'
-import { nailSetService } from '@/services/nailSetService'
+import { auth } from '@/server/lib/auth'
+import { nailSetService } from '@/server/services/nailSetService'
 import { ApiResponseCode } from '@/types/api'
-import { createSuccessResponse } from '@/lib/server/api-response'
+import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetNailSetsResponse,
   GetNailSetResponse,
@@ -12,7 +12,7 @@ import {
   isValidCreateNailSetRequest,
   isValidUpdateNailSetRequest
 } from '@/types/api/nail-set'
-import { controllerHandler } from '@/utils/controllerUtils'
+import { controllerHandler } from '@/server/utils/controllerUtils'
 
 export class NailSetController {
   private service = nailSetService

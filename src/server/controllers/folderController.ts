@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
-import { auth } from '@/lib/server/auth'
-import { folderService } from '@/services/folderService'
+import { auth } from '@/server/lib/auth'
+import { folderService } from '@/server/services/folderService'
 import { ApiResponseCode } from '@/types/api'
-import { createSuccessResponse } from '@/lib/server/api-response'
+import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetFoldersResponse,
   CreateFolderResponse,
@@ -14,7 +14,7 @@ import {
   UpdateFolderResponse,
 
 } from '@/types/api/folder'
-import { controllerHandler } from '@/utils/controllerUtils'
+import { controllerHandler } from '@/server/utils/controllerUtils'
 
 export class FolderController {
   private service = folderService
