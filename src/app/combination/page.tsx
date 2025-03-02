@@ -125,7 +125,7 @@ export default function CombinationPage() {
     onSuccess: () => {
       toast.success("세트가 수정되었습니다")
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "세트 수정 중 오류가 발생했습니다")
     }
   })
@@ -143,7 +143,7 @@ export default function CombinationPage() {
     onSuccess: () => {
       toast.success("세트가 저장되었습니다")
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "세트 저장 중 오류가 발생했습니다")
     }
   })

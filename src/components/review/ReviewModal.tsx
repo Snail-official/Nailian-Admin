@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import { ChevronLeft, ChevronRight} from "lucide-react"
 import { useState } from "react"
 import { DialogTitle } from "@radix-ui/react-dialog"
 import { NailColorChips } from "@/components/filters/NailColorChips"

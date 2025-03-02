@@ -5,7 +5,6 @@ import CirclePlusIcon from "@/assets/icons/CirclePlusIcon.svg"
 import { useState } from "react"
 import { NailTipGrid } from "@/components/nail/NailTipGrid"
 import { UploadModal } from "@/components/upload/UploadModal"
-import { DeleteDialog } from "@/components/delete/DeleteDialog"
 import { NailShapeChips } from "@/components/filters/NailShapeChips"
 import { ReviewModal } from "@/components/review/ReviewModal"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -32,7 +31,7 @@ export default function AiResultPage() {
       toast.success("업로드가 완료되었습니다.")
       queryClient.invalidateQueries({ queryKey: ['aiResults'] })
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "업로드 중 오류가 발생했습니다.")
     }
   })
@@ -44,7 +43,7 @@ export default function AiResultPage() {
       toast.success("검토가 완료되었습니다.")
       queryClient.invalidateQueries({ queryKey: ['aiResults'] })
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || "검토 중 오류가 발생했습니다.")
     }
   })

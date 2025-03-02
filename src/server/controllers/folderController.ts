@@ -6,7 +6,6 @@ import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetFoldersResponse,
   CreateFolderResponse,
-  isValidGetFoldersRequest,
   isValidCreateFolderRequest,
   isValidDeleteFolderRequest,
   DeleteFolderResponse,
@@ -20,12 +19,8 @@ export class FolderController {
   private service = folderService
 
   // GET /api/folder
-  async getFolders(req: NextRequest) {
+  async getFolders() {
     return controllerHandler(async () => {
-      if (!isValidGetFoldersRequest(req)) {
-        throw new Error('잘못된 요청 형식입니다.')
-      }
-
       const folders = await this.service.getFolders()
 
       return createSuccessResponse<GetFoldersResponse['data']>(

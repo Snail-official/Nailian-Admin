@@ -8,10 +8,6 @@ export interface Folder {
 }
 
 // GET /api/folder
-export function isValidGetFoldersRequest(req: NextRequest): boolean {
-  return true
-}
-
 export type GetFoldersResponse = ApiSuccessResponse<{
   folders: Folder[]
 }>
@@ -25,7 +21,7 @@ export interface CreateFolderRequest extends NextRequest {
   json(): Promise<CreateFolderBody>
 }
 
-export async function isValidCreateFolderRequest(body: any): Promise<boolean> {
+export function isValidCreateFolderRequest(body: CreateFolderBody) {
   return typeof body.name === 'string' && body.name.length > 0
 }
 

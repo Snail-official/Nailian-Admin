@@ -1,5 +1,4 @@
-import { ApiSuccessResponse, ApiResponse } from '../api'
-import { NextRequest } from 'next/server'
+import { ApiSuccessResponse } from '../api'
 
 // 공통 타입
 export interface NailTip {
@@ -46,10 +45,10 @@ export type CreateNailSetResponse = ApiSuccessResponse<{
   id: number 
 }>
 
-export function isValidCreateNailSetRequest(body: any): body is CreateNailSetRequest {
+export function isValidCreateNailSetRequest(body: CreateNailSetRequest){
   return (
     Array.isArray(body?.folderIds) &&
-    body.folderIds.every((id: any) => typeof id === 'number') &&
+    body.folderIds.every((id: number) => typeof id === 'number') &&
     body?.thumb?.tipId !== undefined &&
     body?.index?.tipId !== undefined &&
     body?.middle?.tipId !== undefined &&
@@ -71,7 +70,7 @@ export type UpdateNailSetResponse = ApiSuccessResponse<{
   id: number
 }>
 
-export function isValidUpdateNailSetRequest(body: any): body is UpdateNailSetRequest {
+export function isValidUpdateNailSetRequest(body: UpdateNailSetRequest) {
   return (
     body?.thumb?.tipId !== undefined &&
     body?.index?.tipId !== undefined &&

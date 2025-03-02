@@ -30,7 +30,7 @@ export function FolderSection({ onFolderClick }: FolderSectionProps) {
       queryClient.invalidateQueries({ queryKey: ['folders'] })
       toast.success('폴더가 생성되었습니다.')
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || '폴더 생성 중 오류가 발생했습니다.')
     }
   })

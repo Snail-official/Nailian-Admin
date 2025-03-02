@@ -46,7 +46,7 @@ export function NailDetailModal({
             queryClient.invalidateQueries({ queryKey: ['nailDetail', tipId] })
             queryClient.invalidateQueries({ queryKey: ['finals'] })
         },
-        onError: (error: any) => {
+        onError: (error) => {
             toast.error(error.message || '복구 중 오류가 발생했습니다.')
         }
     })

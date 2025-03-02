@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { auth } from '@/server/lib/auth'
 import { finalService } from '@/server/services/finalService'
 import { ApiResponseCode } from '@/types/api'
-import { createSuccessResponse, createErrorResponse } from '@/server/lib/api-response'
+import { createSuccessResponse } from '@/server/lib/api-response'
 import { 
   GetFinalByIdResponse,
   DeleteFinalResponse,
@@ -46,8 +46,9 @@ export class FinalController {
   }
   
   // DELETE /api/final/:id
-  async deleteFinal(req: NextRequest, { params }: { params: { id: string } }) {
+  async deleteFinal(req: NextRequest, context: { params: { id: string } }) {
     return controllerHandler(async () => {
+      const params = await context.params
       const id = params.id
       
       if (!isValidGetFinalByIdParam(id)) {

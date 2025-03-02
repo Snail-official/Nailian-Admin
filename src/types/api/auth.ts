@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server'
 
 // 공통 타입
 export interface User {
-  id: string
+  id: number
   email: string
   username: string
 }

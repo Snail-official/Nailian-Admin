@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog" 
 import { NailShapeChips } from '../filters/NailShapeChips'
-import { Shape, SHAPES } from '@/types/nail'
+import { Shape } from '@/types/nail'
 import { toast } from "sonner"
 
 interface UploadModalProps {

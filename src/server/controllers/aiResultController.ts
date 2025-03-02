@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { auth } from '@/server/lib/auth'
 import { aiResultService } from '@/server/services/aiResultService'
 import { ApiResponseCode } from '@/types/api'
-import { createSuccessResponse, createErrorResponse } from '@/server/lib/api-response'
+import { createSuccessResponse } from '@/server/lib/api-response'
 import {
   GetAiResultResponse,
   UploadAiResultResponse,

@@ -31,7 +31,7 @@ export async function auth() {
             email: decoded.email,
             username: decoded.username
         }
-    } catch (error) {
+    } catch {
         return null
     }
 } 

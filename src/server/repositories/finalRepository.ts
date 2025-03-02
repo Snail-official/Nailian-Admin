@@ -1,5 +1,6 @@
 import { prisma } from '@/server/lib/prisma'
 import { Shape, Color, Category } from '@/types/nail'
+import { Prisma } from '@prisma/client'
 
 export class FinalRepository {
   // ID로 네일 팁 조회
@@ -86,7 +87,7 @@ export class FinalRepository {
     isScraped?: boolean
     adminId?: number
   }) {
-    const whereConditions: any = {}
+    const whereConditions: Prisma.nail_tipWhereInput = {}
     
     if (params.shape) whereConditions.shape = params.shape
     if (params.color) whereConditions.color = params.color

@@ -3,7 +3,7 @@ import { ApiSuccessResponse, ApiResponseCode, ApiErrorResponse } from '@/types/a
 import { redirect } from 'next/navigation'
 
 // 응답 타입
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T> {
     code: ApiResponseCode
     message: string
     data?: T
