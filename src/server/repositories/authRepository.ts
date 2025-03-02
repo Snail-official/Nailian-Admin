@@ -1,5 +1,5 @@
 import { prisma } from '@/server/lib/prisma'
-import redis from '@/server/lib/redis'
+import { getRedisClient } from '@/server/lib/redis'
 
 export class AuthRepository {
   // 이메일로 관리자 조회
@@ -69,6 +69,7 @@ export class AuthRepository {
   // 액세스 토큰을 Redis에 저장
   async saveAccessToken(userId: number, token: string, expirySeconds: number = 3600) {
     const redisKey = `access_token:${userId}`
+    const redis = getRedisClient()
     await redis.set(redisKey, token, 'EX', expirySeconds)
   }
 

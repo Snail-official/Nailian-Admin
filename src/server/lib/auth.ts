@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
-import redis from './redis'
+import { getRedisClient } from './redis'
 
 export async function auth() {
     try {
@@ -20,6 +20,7 @@ export async function auth() {
 
         // Redis에서 토큰 유효성 체크
         const redisKey = `access_token:${decoded.id}`
+        const redis = getRedisClient()
         const storedToken = await redis.get(redisKey)
 
         if (storedToken !== accessToken) {
