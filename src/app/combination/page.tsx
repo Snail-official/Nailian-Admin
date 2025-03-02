@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { finalApi } from "@/lib/api/final"
@@ -19,7 +19,7 @@ import { nailSetApi } from "@/lib/api/nail-set"
 import { NailTip } from "@/types/api/nail-set"
 import { FINGER_POSITIONS } from "@/types/nail"
 
-export default function CombinationPage() {
+function CombinationContent() {
   const searchParams = useSearchParams()
   const setId = searchParams.get('setId')
   const folderId = parseInt(searchParams.get('folderId') || '0')
@@ -231,5 +231,13 @@ export default function CombinationPage() {
         onImageSelect={handleImageSelect}
       />
     </div>
+  )
+}
+
+export default function CombinationPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CombinationContent />
+    </Suspense>
   )
 }

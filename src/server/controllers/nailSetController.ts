@@ -37,11 +37,8 @@ export class NailSetController {
   }
 
   // GET /api/nail-set/:id
-  async getNailSetById(req: NextRequest, context: { params: { id: string } }) {
+  async getNailSetById(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const params = await context.params
-      const id = parseInt(params.id)
-      
       const nailset = await this.service.getNailSetById(id)
 
       return createSuccessResponse<GetNailSetResponse['data']>(
@@ -87,9 +84,8 @@ export class NailSetController {
   }
 
   // PUT /api/nail-set/:id
-  async updateNailSet(req: NextRequest, context: { params: { id: string } }) {
+  async updateNailSet(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const params = await context.params
       const body = await req.json()
       
       if (!isValidUpdateNailSetRequest(body)) {
@@ -101,8 +97,6 @@ export class NailSetController {
         throw new Error('인증이 필요합니다.')
       }
 
-      const id = parseInt(params.id)
-      
       await this.service.updateNailSet(id, {
         thumb: body.thumb,
         index: body.index,
@@ -120,16 +114,13 @@ export class NailSetController {
   }
 
   // DELETE /api/nail-set/:id
-  async deleteNailSet(req: NextRequest, context: { params: { id: string } }) {
+  async deleteNailSet(req: NextRequest, id: number) {
     return controllerHandler(async () => {
-      const params = await context.params
       const admin = await auth()
       if (!admin) {
         throw new Error('인증이 필요합니다.')
       }
 
-      const id = parseInt(params.id)
-      
       await this.service.deleteNailSet(id)
 
       return createSuccessResponse<DeleteNailSetResponse['data']>(

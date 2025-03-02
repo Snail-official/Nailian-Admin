@@ -28,8 +28,7 @@ export function isValidCreateFolderRequest(body: CreateFolderBody) {
 export type CreateFolderResponse = ApiSuccessResponse
 
 // DELETE /api/folder/:id
-export function isValidDeleteFolderRequest(params: { id: string }): boolean {
-  const id = Number(params.id)
+export function isValidDeleteFolderRequest(id: number): boolean {
   return !isNaN(id) && id > 0
 }
 
@@ -40,8 +39,7 @@ export interface UpdateFolderBody {
   name: string
 }
 
-export function isValidUpdateFolderRequest(params: { id: string }): boolean {
-  const id = Number(params.id)
+export function isValidUpdateFolderRequest(id: number): boolean {
   return !isNaN(id) && id > 0
 }
 
