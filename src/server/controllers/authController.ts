@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { authService } from '@/server/services/authService'
 import { createSuccessResponse } from '@/server/lib/api-response'
 import { ApiResponseCode } from '@/types/api/response'
-import { isValidLoginBody, isValidSignupBody, LoginResponse, RefreshResponse, SignupResponse } from '@/types/api/auth'
+import { isValidLoginBody, isValidSignupBody, LoginResponse, LogoutResponse, RefreshResponse, SignupResponse } from '@/types/api/auth'
 import { isValidRefreshRequest } from '@/types/api/auth'
 import { controllerHandler } from '@/server/utils/controllerUtils'
 
@@ -98,6 +98,22 @@ export class AuthController {
         { user }
       )
     }, '회원가입 중 오류가 발생했습니다.')
+  }
+
+  async logout(req: NextRequest) {
+    return controllerHandler(async () => {
+      const cookieStore = await cookies()
+      
+      // 인증 관련 쿠키 삭제
+      cookieStore.delete('accessToken')
+      cookieStore.delete('refreshToken')
+  
+      
+      return createSuccessResponse<LogoutResponse['data']>(
+        ApiResponseCode.SUCCESS,
+        '로그아웃 성공'
+      )
+    }, '로그아웃 중 오류가 발생했습니다.')
   }
 }
 
