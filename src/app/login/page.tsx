@@ -19,7 +19,7 @@ export default function LoginPage() {
         mutationFn: authApi.login,
         onSuccess: () => {
             toast.success("로그인 성공!")
-            router.push("/")
+            router.refresh()
         },
         onError: (error) => {
             toast.error(error.message || "로그인 중 오류가 발생했습니다.")
