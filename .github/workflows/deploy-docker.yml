@@ -3,7 +3,7 @@ name: Build and Deploy Docker image (Admin Service)
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
   build-and-push-docker:
