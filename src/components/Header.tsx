@@ -6,9 +6,12 @@ import { SideSheet } from "@/components/navigation/SideSheet"
 import { usePathname, useRouter } from "next/navigation"
 import { authApi } from "@/lib/api/auth"
 import { toast } from "sonner"
-import { usePathname } from "next/navigation"
 
-export function Header() {
+interface HeaderProps {
+  isAuthenticated: boolean
+}
+
+export function Header({ isAuthenticated }: HeaderProps) {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -45,6 +48,7 @@ export function Header() {
         </Link>
 
            {/* 네비게이션 */}
+           {isAuthenticated && (
           <nav className="hidden md:flex items-center space-x-6 ml-auto">
             <Link
               href="/first-cut"
@@ -85,6 +89,7 @@ export function Header() {
               로그아웃
             </button>
           </nav>
+        )}
       </div>
     </header>
   )
