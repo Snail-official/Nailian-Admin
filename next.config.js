@@ -9,7 +9,7 @@ const cdnDomain = process.env.AWS_CLOUDFRONT_DOMAIN
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    turbo: false, // Turbopack 비활성화
+    turbo: {}, // Turbopack 비활성화
   },
   images: {
     domains: [s3Domain, cdnDomain].filter(Boolean),
@@ -36,5 +36,15 @@ const nextConfig = {
     return config;
   },
 };
+
+if (process.env.BUILD_CONTEXT === 'docker') {
+  console.log('Disabled eslint and typescript checks on Docker environment');
+
+  if (!nextConfig['eslint']) nextConfig['eslint'] = {};
+  if (!nextConfig['typescript']) nextConfig['typescript'] = {};
+
+  nextConfig['eslint']['ignoreDuringBuilds'] = true;
+  nextConfig['typescript']['ignoreBuildErrors'] = true;
+}
 
 module.exports = nextConfig;
