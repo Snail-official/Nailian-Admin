@@ -32,7 +32,7 @@ export function Header({ isAuthenticated }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-[#191919] backdrop-blur supports-[backdrop-filter]:bg-[#191919]/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-[#191919] backdrop-blur">
       <div className="flex w-full h-16 items-center pl-[24px] pr-[72px]">
         <SideSheet />
 
