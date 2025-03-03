@@ -12,7 +12,20 @@ const nextConfig = {
     turbo: {}, // Turbopack 비활성화
   },
   images: {
-    domains: [s3Domain, cdnDomain].filter(Boolean),
+    remotePatterns: [
+      ...(s3Domain ? [{
+        protocol: 'https',
+        hostname: s3Domain,
+        port: '',
+        pathname: '/**',
+      }] : []),
+      ...(cdnDomain ? [{
+        protocol: 'https',
+        hostname: cdnDomain,
+        port: '',
+        pathname: '/**',
+      }] : []),
+    ],
   },
 
   webpack(config) {

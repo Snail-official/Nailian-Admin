@@ -62,3 +62,6 @@ export function isValidRefreshRequest(req: NextRequest): boolean {
 export type RefreshResponse = ApiSuccessResponse<{
   accessToken: string
 }> 
+
+// POST /api/auth/logout
+export type LogoutResponse = ApiSuccessResponse

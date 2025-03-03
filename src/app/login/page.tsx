@@ -41,7 +41,6 @@ export default function LoginPage() {
                         width={150}
                         height={50}
                         className="object-contain mb-2"
-                        priority
                     />
                     <p className="text-sm text-muted-foreground">
                         이메일과 비밀번호를 입력해주세요

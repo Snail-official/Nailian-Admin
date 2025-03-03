@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
     const isAuthenticated = request.cookies.has('accessToken')  // 쿠키에서 토큰 확인
 
     // 공개 경로 목록 (로그인하지 않아도 접근 가능한 경로)
-    const publicPaths = ['/login', '/api/auth/login', '/api/auth/signup']
+    const publicPaths = ['/login', '/api/auth/login', '/api/auth/signup', '/images']
     const isPublicPath = publicPaths.some(path => pathname.startsWith(path))
 
     // 로그인하지 않은 경우
@@ -37,6 +37,6 @@ export const config = {
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          */
-        '/((?!_next/static|_next/image|favicon.ico).*)',
+        '/((?!_next/static|_next/image|favicon.ico|public).*)',
     ],
 } 
