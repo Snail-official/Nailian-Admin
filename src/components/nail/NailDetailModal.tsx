@@ -13,6 +13,7 @@ import { COLOR_LABELS } from "../filters/NailColorChips"
 import { CATEGORY_LABELS } from "../filters/NailCategoryChips"
 import { toast } from "sonner"
 import { RefreshCcw } from "lucide-react"
+import { formatToKST } from "@/lib/date"
 
 interface NailDetailModalProps {
     isOpen: boolean
@@ -135,7 +136,7 @@ export function NailDetailModal({
                                     </div>
                                     <div className="border-b border-gray-100 pb-2">
                                         <h3 className="text-xs font-medium text-gray-500 mb-1">날짜</h3>
-                                        <p className="text-base font-medium">{nailDetail?.createdAt ? new Date(nailDetail?.createdAt).toISOString().replace('T', ' ').slice(0, 16) : '-'}</p>
+                                        <p className="text-base font-medium">{nailDetail?.createdAt ? formatToKST(nailDetail?.createdAt, 'datetime') : '-'}</p>
                                     </div>
                                 </div>
                             </div>

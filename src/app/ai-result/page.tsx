@@ -101,11 +101,17 @@ export default function AiResultPage() {
           createdAt: image.createdAt
         }))}
         selectedImages={selectedImages}
-        onImageSelect={(id) => setSelectedImages(prev =>
-          prev.includes(id)
-            ? prev.filter(imageId => imageId !== id)
-            : [...prev, id]
-        )}
+        onImageSelect={(selectedIds) => {
+          if (Array.isArray(selectedIds)) {
+            setSelectedImages(selectedIds);
+          } else {
+            setSelectedImages(prev => 
+              prev.includes(selectedIds) 
+                ? prev.filter(imageId => imageId !== selectedIds)
+                : [...prev, selectedIds]
+            );
+          }
+        }}
       />
 
       <UploadModal

@@ -9,6 +9,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { DeleteDialog } from "@/components/delete/DeleteDialog"
 import { NailSet } from "@/types/api/nail-set"
+import { formatToKST } from "@/lib/date"
 
 interface NailSetDetailModalProps {
     isOpen: boolean
@@ -52,7 +53,7 @@ export function NailSetDetailModal({ isOpen, onOpenChange, nailSet, onDelete }: 
                         <div className="flex items-center justify-between">
                             <div className="text-sm text-gray-600">
                                 <p>업로더: {nailSet.uploadedBy || ''}</p>
-                                <p>생성일: {nailSet.createdAt ? new Date(nailSet.createdAt).toLocaleDateString() : '날짜 없음'}</p>
+                                <p>생성일: {nailSet.createdAt ? formatToKST(nailSet.createdAt, 'datetime') : '날짜 없음'}</p>
                             </div>
                             <div className="flex gap-2">
                                 <Button 
