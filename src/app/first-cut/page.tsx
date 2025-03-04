@@ -55,7 +55,7 @@ export default function FirstCutPage() {
   const downloadMutation = useMutation({
     mutationFn: async (ids: number[]) => {
       const urls = await firstCutApi.downloadFirstCuts(ids)
-      await downloadImages(urls)
+      await downloadImages(urls, 'First-Cut-Folder', 'First-Cut')
     },
     onSuccess: () => {
       setSelectedImages([])
@@ -135,11 +135,17 @@ export default function FirstCutPage() {
           isDownloaded: image.isDownloaded
         }))}
         selectedImages={selectedImages}
-        onImageSelect={(id) => setSelectedImages(prev => 
-          prev.includes(id) 
-            ? prev.filter(imageId => imageId !== id)
-            : [...prev, id]
-        )}
+        onImageSelect={(selectedIds) => {
+          if (Array.isArray(selectedIds)) {
+            setSelectedImages(selectedIds);
+          } else {
+            setSelectedImages(prev => 
+              prev.includes(selectedIds) 
+                ? prev.filter(imageId => imageId !== selectedIds)
+                : [...prev, selectedIds]
+            );
+          }
+        }}
       />
 
       <UploadModal
