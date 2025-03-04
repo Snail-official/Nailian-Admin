@@ -55,7 +55,7 @@ export default function FirstCutPage() {
   const downloadMutation = useMutation({
     mutationFn: async (ids: number[]) => {
       const urls = await firstCutApi.downloadFirstCuts(ids)
-      await downloadImages(urls)
+      await downloadImages(urls, 'First-Cut-Folder', 'First-Cut')
     },
     onSuccess: () => {
       setSelectedImages([])
