@@ -16,9 +16,12 @@ export class FirstCutRepository {
       include: {
         user_nail_assets_uploaded_byTouser: true
       },
-      orderBy: {
-        created_at: 'desc'
-      }
+      orderBy: [
+        // 다운로드 상태로 먼저 정렬 (다운로드되지 않은 것이 먼저)
+        { is_downloaded: 'asc' },
+        // 그 다음 생성일 기준 내림차순
+        { created_at: 'desc' }
+      ]
     })
   }
 
