@@ -1,6 +1,7 @@
 import Image from "next/image"
 import CheckIcon from "@/assets/icons/CheckIcon.svg"
 import { NailType } from "@/types/nail"
+import { formatToKST } from "@/lib/date"
 
 export interface Image {
   id: number
@@ -87,7 +88,7 @@ export function NailTipGrid(props: NailTipGridProps) {
           <div className="p-2 space-y-1 bg-white flex flex-col justify-center items-center">
             <p className="text-xs text-gray-600">{image.username}</p>
             <p className="text-xs text-gray-600">
-              {new Date(image.createdAt).toISOString().replace('T', ' ').slice(0, 16)}
+            {formatToKST(image.createdAt, 'datetime')}
             </p>
           </div>
           {image.isDownloaded && (
