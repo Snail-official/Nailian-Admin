@@ -9,8 +9,8 @@ import { cookies } from 'next/headers'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Your App Name",
-  description: "Your app description",
+  title: "네일리안 어드민",
+  description: "네일리안 어드민 대시보드",
 };
 
 export default async function RootLayout({

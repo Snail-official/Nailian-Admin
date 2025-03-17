@@ -94,6 +94,62 @@ export class AiResultRepository {
   async transaction<T>(callback: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
     return prisma.$transaction(callback)
   }
+
+  // ── 트랜잭션 전용 메서드 ──
+
+  // 트랜잭션 내에서 삭제 처리 
+  async deleteAiAssetInTx(tx: Prisma.TransactionClient, id: number, deletedBy: number) {
+    return tx.nail_assets.update({
+      where: {
+        id,
+        asset_type: 'ai_generated'
+      },
+      data: {
+        deleted_at: new Date(),
+        deleted_by: deletedBy
+      }
+    })
+  }
+
+  // 트랜잭션 내에서 자산 조회
+  async findByIdInTx(tx: Prisma.TransactionClient, id: number) {
+    return tx.nail_assets.findUnique({
+      where: {
+        id,
+        asset_type: 'ai_generated'
+      }
+    })
+  }
+
+  // 트랜잭션 내에서 nail_tip 생성
+  async createNailTipInTx(
+    tx: Prisma.TransactionClient,
+    data: { imageUrl: string; shape: Shape; category: Category; color: Color; checkedBy: number }
+  ) {
+    return tx.nail_tip.create({
+      data: {
+        image_url: data.imageUrl,
+        shape: data.shape,
+        category: data.category,
+        color: data.color,
+        checked_by: data.checkedBy
+      }
+    })
+  }
+
+  // 트랜잭션 내에서 삭제 처리 (승인 후 삭제, deleted_by에 null)
+  async markAssetAsDeletedInTx(tx: Prisma.TransactionClient, id: number, deletedBy: number | null) {
+    return tx.nail_assets.update({
+      where: {
+        id,
+        asset_type: 'ai_generated'
+      },
+      data: {
+        deleted_at: new Date(),
+        deleted_by: deletedBy
+      }
+    })
+  }
 }
 
 // 싱글톤 인스턴스 생성

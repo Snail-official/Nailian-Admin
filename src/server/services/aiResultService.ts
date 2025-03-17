@@ -1,8 +1,10 @@
 import { aiResultRepository } from '@/server/repositories/aiResultRepository'
-import { uploadToS3 } from '@/server/lib/s3'
 import { Shape } from '@/types/nail'
 import { AiResultImage, AiResultReview } from '@/types/api/ai-result'
 import { Prisma } from '@prisma/client'
+import { chooseMaskPathBasedOnShape } from '../utils/image'
+import { processImageWithMask } from '../utils/image'
+import { uploadToS3 } from '../lib/s3'
 
 export class AiResultService {
   private repository = aiResultRepository
@@ -28,16 +30,37 @@ export class AiResultService {
   // AI 결과 이미지 업로드
   async uploadAiResults(files: File[], shape: Shape, adminId: number) {
     const uploadPromises = files.map(async (file) => {
-      const imageUrl = await uploadToS3(file)
-      return this.repository.create({
-        imageUrl,
-        shape,
-        uploadedBy: adminId
-      })
-    })
+      try {
+        // 파일을 버퍼로 변환
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        
+        // 해당 모양에 맞는 마스크 정보 가져오기
+        const maskInfo = chooseMaskPathBasedOnShape(shape);
+        
+        // 이미지 처리 (마스크 적용) - 버퍼 직접 전달
+        const processedBuffer = await processImageWithMask(maskInfo, buffer);
+        
+        // 처리된 이미지 S3에 업로드
+        const processedImageBlob = new Blob([processedBuffer], { type: 'image/png' });
+        const processedImageUrl = await uploadToS3(
+          new File([processedImageBlob], `processed-${Date.now()}.png`, { type: 'image/png' })
+        );
+        
+        // DB에 저장
+        return this.repository.create({
+          imageUrl: processedImageUrl,
+          shape,
+          uploadedBy: adminId
+        });
+      } catch (error) {
+        console.error('Error processing image:', error);
+        throw error; 
+      }
+    });
 
-    await Promise.all(uploadPromises)
-    return true
+    await Promise.all(uploadPromises);
+    return true;
   }
 
   // AI 결과 이미지 검토
@@ -46,47 +69,24 @@ export class AiResultService {
       for (const review of reviews) {
         if (review.isDeleted) {
           // 삭제 처리
-          await tx.nail_assets.update({
-            where: {
-              id: review.id,
-              asset_type: 'ai_generated'
-            },
-            data: {
-              deleted_at: new Date(),
-              deleted_by: adminId
-            }
-          })
+          await this.repository.deleteAiAssetInTx(tx, review.id, adminId)
         } else {
           // 승인된 이미지 처리
-          const asset = await tx.nail_assets.findUnique({
-            where: {
-              id: review.id,
-              asset_type: 'ai_generated'
-            }
-          })
+          const asset = await this.repository.findByIdInTx(tx, review.id)
 
           if (asset) {
+            
             // nail_tips로 이동
-            await tx.nail_tip.create({
-              data: {
-                image_url: asset.image_url,
-                shape: asset.shape,
-                category: review.category!,
-                color: review.color!,
-                checked_by: asset.uploaded_by
-              }
+            await this.repository.createNailTipInTx(tx, {
+              imageUrl: asset.image_url,
+              shape: asset.shape,
+              category: review.category!,
+              color: review.color!,
+              checkedBy: asset.uploaded_by
             })
 
-            // 기존 asset 삭제 처리
-            await tx.nail_assets.update({
-              where: {
-                id: asset.id
-              },
-              data: {
-                deleted_at: new Date(),
-                deleted_by: null
-              }
-            })
+            // 기존 asset 삭제 처리 (승인된 경우 deleted_by는 null)
+            await this.repository.markAssetAsDeletedInTx(tx, asset.id, null)
           }
         }
       }
