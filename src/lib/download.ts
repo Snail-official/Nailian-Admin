@@ -1,3 +1,5 @@
+import JSZip from 'jszip';
+
 export async function downloadImages(urls: string[], folderName?: string, fileNamePrefix?: string) {
     if (!urls || urls.length === 0) {
         console.error('No URLs provided for download')
@@ -7,7 +9,7 @@ export async function downloadImages(urls: string[], folderName?: string, fileNa
     const failedUrls: string[] = []
     
     // 여러 파일을 다운로드할 때 사용할 ZIP 파일 생성 준비
-    let zipFile: any = null;
+    let zipFile: JSZip | null = null;
     let shouldUseZip = urls.length > 1 && folderName && typeof window !== 'undefined';
     
     // JSZip 라이브러리 동적 로드

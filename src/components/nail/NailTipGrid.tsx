@@ -2,7 +2,7 @@ import Image from "next/image"
 import CheckIcon from "@/assets/icons/CheckIcon.svg"
 import { NailType } from "@/types/nail"
 import { formatToKST } from "@/lib/date"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 
 export interface Image {
   id: number
@@ -38,8 +38,8 @@ interface DefaultGridProps extends BaseNailTipGridProps {
 type NailTipGridProps = FinalPageGridProps | CombinationPageGridProps | DefaultGridProps
 
 export function NailTipGrid(props: NailTipGridProps) {
-  const { images } = props
-  const selectedImages = props.selectedImages || []
+  const { images, selectedImages: externalSelectedImages } = props
+  const selectedImages = useMemo(() => externalSelectedImages || [], [externalSelectedImages])
 
   // 내부 선택 상태 관리 (다중 선택용)
   const [internalSelectedImages, setInternalSelectedImages] = useState<number[]>(selectedImages ?? [])
