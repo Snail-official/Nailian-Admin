@@ -128,10 +128,10 @@ export function NailDetailModal({
                                     </div>
                                 </div>
 
-                                {/* 오른쪽 컬럼: 업로드, 날짜 */}
+                                {/* 오른쪽 컬럼: 검토자, 날짜 */}
                                 <div className="space-y-4">
                                     <div className="border-b border-gray-100 pb-2">
-                                        <h3 className="text-xs font-medium text-gray-500 mb-1">업로드</h3>
+                                        <h3 className="text-xs font-medium text-gray-500 mb-1">검토자</h3>
                                         <p className="text-base font-medium">{nailDetail?.checkedBy || '-'}</p>
                                     </div>
                                     <div className="border-b border-gray-100 pb-2">

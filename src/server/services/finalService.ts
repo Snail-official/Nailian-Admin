@@ -141,7 +141,7 @@ async getFinals(params: {
     }
     
     // viewMode가 deleted이면 nail_assets에서도 삭제된 AI 생성 이미지를 가져옴
-    if (viewMode === 'deleted') {
+    if (viewMode === 'deleted' && color === null && category === null) {
       const nailAssets = await this.repository.findDeletedAiAssets(shape)
       
       if (nailAssets.length > 0) {
