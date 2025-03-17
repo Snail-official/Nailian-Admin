@@ -1,6 +1,7 @@
 import 'server-only'
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import crypto from 'crypto'
+import { Readable } from 'stream'
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION || 'ap-northeast-2',
@@ -48,7 +49,7 @@ export async function getImageFromS3(bucket: string, key: string): Promise<Buffe
     
     // 응답 본문을 버퍼로 변환
     const chunks: Buffer[] = [];
-    for await (const chunk of response.Body as any) {
+    for await (const chunk of response.Body as Readable) {
       chunks.push(Buffer.from(chunk));
     }
     

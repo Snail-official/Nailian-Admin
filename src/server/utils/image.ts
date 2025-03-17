@@ -57,7 +57,7 @@ export async function processImageWithMask(maskInfo: { bucket: string, key: stri
       .toBuffer({ resolveWithObject: true });
 
     // 리사이징된 컬러 네일 이미지 로드
-    const { data: colorData, info: colorInfo } = await sharp(resizedColorNail)
+    const { data: colorData } = await sharp(resizedColorNail)
       .ensureAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
@@ -93,8 +93,7 @@ export async function processImageWithMask(maskInfo: { bucket: string, key: stri
         channels: 4
       }
     }).png().toBuffer();
-  } catch (error: any) {
-    console.error('이미지 처리 중 오류 발생:', error);
-    throw new Error(`이미지 처리 중 오류: ${error.message}`);
+  } catch {
+    throw new Error('이미지 처리 중 오류');
   }
 }

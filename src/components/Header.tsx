@@ -26,7 +26,7 @@ export function Header({ isAuthenticated }: HeaderProps) {
       await authApi.logout()
       toast.success('로그아웃 성공')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('로그아웃 중 오류')
     }
   }
