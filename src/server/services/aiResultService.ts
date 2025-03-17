@@ -1,8 +1,10 @@
 import { aiResultRepository } from '@/server/repositories/aiResultRepository'
-import { uploadToS3 } from '@/server/lib/s3'
 import { Shape } from '@/types/nail'
 import { AiResultImage, AiResultReview } from '@/types/api/ai-result'
 import { Prisma } from '@prisma/client'
+import { chooseMaskPathBasedOnShape } from '../utils/image'
+import { processImageWithMask } from '../utils/image'
+import { uploadToS3 } from '../lib/s3'
 
 export class AiResultService {
   private repository = aiResultRepository
@@ -28,16 +30,37 @@ export class AiResultService {
   // AI 결과 이미지 업로드
   async uploadAiResults(files: File[], shape: Shape, adminId: number) {
     const uploadPromises = files.map(async (file) => {
-      const imageUrl = await uploadToS3(file)
-      return this.repository.create({
-        imageUrl,
-        shape,
-        uploadedBy: adminId
-      })
-    })
+      try {
+        // 파일을 버퍼로 변환
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        
+        // 해당 모양에 맞는 마스크 정보 가져오기
+        const maskInfo = chooseMaskPathBasedOnShape(shape);
+        
+        // 이미지 처리 (마스크 적용) - 버퍼 직접 전달
+        const processedBuffer = await processImageWithMask(maskInfo, buffer);
+        
+        // 처리된 이미지 S3에 업로드
+        const processedImageBlob = new Blob([processedBuffer], { type: 'image/png' });
+        const processedImageUrl = await uploadToS3(
+          new File([processedImageBlob], `processed-${Date.now()}.png`, { type: 'image/png' })
+        );
+        
+        // DB에 저장
+        return this.repository.create({
+          imageUrl: processedImageUrl,
+          shape,
+          uploadedBy: adminId
+        });
+      } catch (error) {
+        console.error('Error processing image:', error);
+        throw error; 
+      }
+    });
 
-    await Promise.all(uploadPromises)
-    return true
+    await Promise.all(uploadPromises);
+    return true;
   }
 
   // AI 결과 이미지 검토
