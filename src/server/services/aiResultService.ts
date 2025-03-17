@@ -82,7 +82,7 @@ export class AiResultService {
               shape: asset.shape,
               category: review.category!,
               color: review.color!,
-              checkedBy: asset.uploaded_by
+              checkedBy: adminId
             })
 
             // 기존 asset 삭제 처리 (승인된 경우 deleted_by는 null)
