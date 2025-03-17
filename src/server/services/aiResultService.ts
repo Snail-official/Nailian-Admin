@@ -46,47 +46,24 @@ export class AiResultService {
       for (const review of reviews) {
         if (review.isDeleted) {
           // 삭제 처리
-          await tx.nail_assets.update({
-            where: {
-              id: review.id,
-              asset_type: 'ai_generated'
-            },
-            data: {
-              deleted_at: new Date(),
-              deleted_by: adminId
-            }
-          })
+          await this.repository.deleteAiAssetInTx(tx, review.id, adminId)
         } else {
           // 승인된 이미지 처리
-          const asset = await tx.nail_assets.findUnique({
-            where: {
-              id: review.id,
-              asset_type: 'ai_generated'
-            }
-          })
+          const asset = await this.repository.findByIdInTx(tx, review.id)
 
           if (asset) {
+            
             // nail_tips로 이동
-            await tx.nail_tip.create({
-              data: {
-                image_url: asset.image_url,
-                shape: asset.shape,
-                category: review.category!,
-                color: review.color!,
-                checked_by: asset.uploaded_by
-              }
+            await this.repository.createNailTipInTx(tx, {
+              imageUrl: asset.image_url,
+              shape: asset.shape,
+              category: review.category!,
+              color: review.color!,
+              checkedBy: asset.uploaded_by
             })
 
-            // 기존 asset 삭제 처리
-            await tx.nail_assets.update({
-              where: {
-                id: asset.id
-              },
-              data: {
-                deleted_at: new Date(),
-                deleted_by: null
-              }
-            })
+            // 기존 asset 삭제 처리 (승인된 경우 deleted_by는 null)
+            await this.repository.markAssetAsDeletedInTx(tx, asset.id, null)
           }
         }
       }
