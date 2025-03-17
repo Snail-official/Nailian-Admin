@@ -100,7 +100,7 @@ export class AuthController {
     }, '회원가입 중 오류가 발생했습니다.')
   }
 
-  async logout(req: NextRequest) {
+  async logout() {
     return controllerHandler(async () => {
       const cookieStore = await cookies()
       
