@@ -20,7 +20,7 @@ export default async function RootLayout({
 }) {
   // 서버에서 인증 상태 확인
   const cookieStore = await cookies()
-  const isAuthenticated = !!cookieStore.get('accessToken')
+  const isAuthenticated = !!cookieStore.get('accessToken') || !!cookieStore.get('refreshToken')
 
   return (
     <html lang="ko">

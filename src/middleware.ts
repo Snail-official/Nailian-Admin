@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
-    const isAuthenticated = request.cookies.has('accessToken')  // 쿠키에서 토큰 확인
+    const isAuthenticated = request.cookies.has('accessToken') || request.cookies.has('refreshToken')
 
     // 공개 경로 목록 (로그인하지 않아도 접근 가능한 경로)
     const publicPaths = ['/login', '/api/auth/login', '/api/auth/signup', '/images']
