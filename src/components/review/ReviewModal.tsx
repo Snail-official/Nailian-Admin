@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight} from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { DialogTitle } from "@radix-ui/react-dialog"
 import { NailColorChips } from "@/components/filters/NailColorChips"
 
@@ -36,6 +36,24 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete, isRecove
             setCurrentIndex(currentIndex + 1)
         }
     }
+
+    // 키보드 단축키 설정
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!isOpen) return;
+            
+            if (e.key === 'ArrowLeft') {
+                handlePrevious();
+            } else if (e.key === 'ArrowRight') {
+                handleNext();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen, currentIndex, images.length]);
 
     const handleDelete = () => {
         const currentImage = images[currentIndex]
