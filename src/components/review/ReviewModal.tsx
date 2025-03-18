@@ -46,6 +46,10 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete, isRecove
                 handlePrevious();
             } else if (e.key === 'ArrowRight') {
                 handleNext();
+            } else if (e.key === 'd' || e.key === 'D') {
+                if (!isRecoveryMode) {
+                    handleDelete();
+                }
             }
         };
 
@@ -53,7 +57,7 @@ export function ReviewModal({ isOpen, onOpenChange, images, onComplete, isRecove
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isOpen, currentIndex, images.length]);
+    }, [isOpen, currentIndex, images.length, isRecoveryMode]);
 
     const handleDelete = () => {
         const currentImage = images[currentIndex]
