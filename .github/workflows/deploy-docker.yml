@@ -60,7 +60,7 @@ jobs:
           tags: |
             ${{ steps.repo_name.outputs.lowercase }}:${{ steps.sha.outputs.SHORT_SHA }}-${{ matrix.arch }}
 
-      - name: Load cache if available
+      - name: Save cache
         uses: actions/cache/save@v4
         id: save_cache
         with:
