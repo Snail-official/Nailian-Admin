@@ -29,9 +29,8 @@ jobs:
         id: repo_name
         uses: ASzc/change-string-case-action@v6
         with:
-          # 테스트 중이므로 Docker Hub의 저장소 이름을 'test'로 사용
           string: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/test
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
 
       - run: echo "BUILDX_CACHE_PATH=/tmp/buildx-cache" >> $GITHUB_ENV
 
