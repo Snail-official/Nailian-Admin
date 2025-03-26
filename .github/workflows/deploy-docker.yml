@@ -33,6 +33,15 @@ jobs:
           string: |
             ${{ secrets.DOCKERHUB_USERNAME }}/test
 
+      - run: echo "BUILDX_CACHE_PATH=/tmp/buildx-cache" >> $GITHUB_ENV
+
+      - name: Load cache if available
+        uses: actions/cache/restore@v4
+        id: load_cache
+        with:
+          path: ${{ env.BUILDX_CACHE_PATH }}
+          key: buildx-cache-${{ matrix.os }}-${{ matrix.arch }}
+
       - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -46,11 +55,18 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          cache-from: type=gha,scope=${{ matrix.os }}-${{ matrix.arch }}
-          cache-to: type=gha,mode=max,compression=zstd,scope=${{ matrix.os }}-${{ matrix.arch }}
+          cache-from: type=local,src=${{ env.BUILDX_CACHE_PATH }}
+          cache-to: type=local,dest=${{ env.BUILDX_CACHE_PATH }},mode=max,compression=zstd
           platforms: linux/${{ matrix.arch }}
           tags: |
             ${{ steps.repo_name.outputs.lowercase }}:${{ steps.sha.outputs.SHORT_SHA }}-${{ matrix.arch }}
+
+      - name: Load cache if available
+        uses: actions/cache/save@v4
+        id: save_cache
+        with:
+          path: ${{ env.BUILDX_CACHE_PATH }}
+          key: ${{ steps.load_cache.outputs.cache-primary-key }}
 
   merge-image-manifest:
     runs-on: ubuntu-latest
