@@ -46,8 +46,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.os }}-${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.os }}-${{ matrix.arch }}
           platforms: linux/${{ matrix.arch }}
           tags: |
             ${{ steps.repo_name.outputs.lowercase }}:${{ steps.sha.outputs.SHORT_SHA }}-${{ matrix.arch }}
