@@ -64,17 +64,6 @@ jobs:
           echo "COMMIT_SHORT_SHA=${{ needs.args.outputs.commit_short_sha }}" >> $GITHUB_ENV
           echo "DOCKER_IMAGE_NAME=$DECRYPTED" >> $GITHUB_ENV
 
-      - name: Load cache if available
-        uses: actions/cache@v4
-        id: load_cache
-        with:
-          path: ${{ env.BUILDX_CACHE_PATH }}
-          key: ${{ env.BUILDX_CACHE_NAME }}-${{ matrix.os }}-${{ matrix.arch }}-${{ env.COMMIT_SHORT_SHA }}
-          restore-keys: |
-            ${{ env.BUILDX_CACHE_NAME }}-${{ matrix.os }}-${{ matrix.arch }}-
-            ${{ env.BUILDX_CACHE_NAME }}-${{ matrix.os }}-
-            ${{ env.BUILDX_CACHE_NAME }}-
-
       - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -94,8 +83,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          cache-from: type=local,src=${{ env.BUILDX_CACHE_PATH }}
-          cache-to: type=local,dest=${{ env.BUILDX_CACHE_PATH }},mode=max,compression=zstd
+          cache-from: type=gha,scope=${{ matrix.os }}-${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.os }}-${{ matrix.arch }}
           platforms: linux/${{ matrix.arch }}
           tags: |
             ${{ env.DOCKER_IMAGE_NAME }}:${{ env.COMMIT_SHORT_SHA }}-${{ matrix.arch }}
