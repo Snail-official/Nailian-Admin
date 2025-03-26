@@ -49,6 +49,7 @@ jobs:
 
     env:
       BUILDX_CACHE_PATH: /tmp/buildx-cache
+      BUILDX_CACHE_NAME: buildx-cache
 
     steps:
       - name: Check out the repository
@@ -64,11 +65,15 @@ jobs:
           echo "DOCKER_IMAGE_NAME=$DECRYPTED" >> $GITHUB_ENV
 
       - name: Load cache if available
-        uses: actions/cache/restore@v4
+        uses: actions/cache@v4
         id: load_cache
         with:
           path: ${{ env.BUILDX_CACHE_PATH }}
-          key: buildx-cache-${{ matrix.os }}-${{ matrix.arch }}
+          key: ${{ env.BUILDX_CACHE_NAME }}-${{ matrix.os }}-${{ matrix.arch }}-${{ env.COMMIT_SHORT_SHA }}
+          restore-keys: |
+            ${{ env.BUILDX_CACHE_NAME }}-${{ matrix.os }}-${{ matrix.arch }}-
+            ${{ env.BUILDX_CACHE_NAME }}-${{ matrix.os }}-
+            ${{ env.BUILDX_CACHE_NAME }}-
 
       - uses: docker/login-action@v3
         with:
@@ -91,13 +96,6 @@ jobs:
           platforms: linux/${{ matrix.arch }}
           tags: |
             ${{ env.DOCKER_IMAGE_NAME }}:${{ env.COMMIT_SHORT_SHA }}-${{ matrix.arch }}
-
-      - name: Save cache
-        uses: actions/cache/save@v4
-        id: save_cache
-        with:
-          path: ${{ env.BUILDX_CACHE_PATH }}
-          key: ${{ steps.load_cache.outputs.cache-primary-key }}
 
   merge-image-manifest:
     runs-on: ubuntu-latest
